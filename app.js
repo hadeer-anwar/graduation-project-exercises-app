@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import errorHandler from './middlewares/errorHandler.js'
+import userRouter from './routes/user.routes.js'
 
 const app = express();
 
@@ -20,8 +21,9 @@ app.get("/", (req, res) => {
     res.json({ message: "API is running..." });
   });
 
-  app.use(errorHandler);
+  app.use(`/api/v1/users`, userRouter);
 
+app.use(errorHandler);
 app.use("*", (req, res) => {
   res.status(404).json({
     success: false,

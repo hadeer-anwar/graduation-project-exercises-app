@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcryptjs';
-import Challenge from "../../challenge/model/challenge.model";
-import Workout from "../../workout/model/workout.model";
+import Challenge from '../../challenge/model/challenge.model.js'
+import Workout from "../../workout/model/workout.model.js";
 
 
 const userSchema = new mongoose.Schema(
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             enum: ["sedentary", "active", "highly active"],
           },
-        points: {type: Number, min: 0 },
+        points: {type: Number, min: 0, default:0 },
         achievements: [
             { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" },
           ],
