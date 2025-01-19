@@ -2,7 +2,8 @@ import dotenv from 'dotenv'
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
-import errorHandler from './middlewares/errorHandler'
+import bodyParser from 'body-parser'
+import errorHandler from './middlewares/errorHandler.js'
 
 const app = express();
 
