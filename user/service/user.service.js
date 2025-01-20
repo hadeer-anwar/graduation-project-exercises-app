@@ -16,7 +16,10 @@ export const addUser = async (data) =>{
 //login 
 
 export const userLogin = async(email, password)=>{
-  const user = await User.findOne({email}).select("+password");    
+  const user = await User.findOne({email}).select("+password");   
+   
+  // console.log("user login ",user)
+
   if(!user)
       throw new appError("User Not Found", 404);
   const isMatch = await user.matchPassword(password);

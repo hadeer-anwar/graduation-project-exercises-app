@@ -30,9 +30,10 @@ export const userSignup= asyncWrapper(async(req,res,next) => {
     const {email, password} = req.body;
   const {user,token} = await userLogin(email, password);
     const tokenOption = {
-      httpOnly: true,
+      httpOnly: true,     // prevent xss attack
       secure: true,
-      sameSite: 'Strict'   // prevent csrf attack
+      sameSite: 'Strict',   // prevent csrf attack
+      maxAge: 7 * 24 * 60 * 60 * 1000, // Cookie valid for 7 days
     }
     res.status(200).cookie("token",token,tokenOption).json({
         success:true,

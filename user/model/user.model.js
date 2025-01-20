@@ -16,11 +16,11 @@ const userSchema = new mongoose.Schema(
         weight: { type: Number, min: 0 },
         fitnessGoal: {
             type: String,
-            enum: ["lose weight", "build muscle", "maintain fitness"],
+            enum: ["lose weight", "build muscle", "maintain fitness", ""],
           },
         activityLevel: {
             type: String,
-            enum: ["sedentary", "active", "highly active"],
+            enum: ["sedentary", "active", "highly active", ""],
           },
         points: {type: Number, min: 0, default:0 },
         achievements: [
