@@ -1,5 +1,5 @@
 import asyncWrapper from '../../middlewares/asyncWrapper.js';
-import { addUser } from '../service/user.service.js';
+import { addUser, userLogin } from '../service/user.service.js';
 
 export const userSignup= asyncWrapper(async(req,res,next) => {
     const user= {
@@ -24,3 +24,22 @@ export const userSignup= asyncWrapper(async(req,res,next) => {
       message: 'User registered successfully'
     });
   })
+
+
+  export const userSignin = asyncWrapper(async (req, res , next) => {
+    const {email, password} = req.body;
+  const {user,token} = await userLogin(email, password);
+    const tokenOption = {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Strict'   // prevent csrf attack
+    }
+    res.status(200).cookie("token",token,tokenOption).json({
+        success:true,
+        message:"User Logged In",
+        data:{
+            user,
+            token
+        }
+    })
+  });
