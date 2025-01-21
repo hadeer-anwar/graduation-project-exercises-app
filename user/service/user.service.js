@@ -31,3 +31,13 @@ export const userLogin = async(email, password)=>{
       token :generateToken({_id:user._id , email:user.email})
   }
 }
+
+// update user info 
+
+export const userUpdate = async(id, data)=>{
+   const user = User.findByIdAndUpdate(id, data);
+   if(!user)
+     throw new appError("Can't update user information");
+   return user;
+}
+

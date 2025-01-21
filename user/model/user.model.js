@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema(
         workoutHistory: [
             { type: mongoose.Schema.Types.ObjectId, ref: "Workout" },
           ],
+        role: {
+            type: String,
+            enum: ["user", "admin"],
+            default: "user",
+        }  
     },
 
     {

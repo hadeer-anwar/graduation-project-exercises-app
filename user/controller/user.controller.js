@@ -1,5 +1,6 @@
-import asyncWrapper from '../../middlewares/asyncWrapper.js';
-import { addUser, userLogin } from '../service/user.service.js';
+import asyncWrapper from '../../middlewares/asyncWrapper.js'
+import bcrypt from 'bcryptjs'
+import { addUser, userLogin, userUpdate} from '../service/user.service.js'
 
 export const userSignup= asyncWrapper(async(req,res,next) => {
     const user= {
@@ -44,3 +45,45 @@ export const userSignup= asyncWrapper(async(req,res,next) => {
         }
     })
   });
+
+
+
+  export const updateUser = asyncWrapper (async (req,res, next)=>{
+     const {id} = req.params;
+     let user = {
+      name: req.body.name,
+      email: req.body.email,
+      profilePic: req.body.profilePic,
+      age: req.body.age,
+      height: req.body.height,
+      weight: req.body.weight,
+      fitnessGoal: req.body.fitnessGoal,
+      activityLevel: req.body.activityLevel,
+      points: req.body.points,
+      achievements: req.body.achievements,
+      workoutHistory: req.body.workoutHistory,
+     }
+     await userUpdate(id, user);
+     res.status(200).json({
+      data: user,
+      success: true,
+      error:false,
+      message: 'User updated successfully'
+    });
+  })
+
+  export const changePassword = asyncWrapper (async (req, res, next)=>{
+    const {id} = req.params;
+    const user = {
+      password: await bcrypt.hash(req.body.password,10)
+    }
+
+    await userUpdate(id, user);
+
+    res.status(200).json({
+      data: user,
+      success: true,
+      error:false,
+      message: 'Password updated successfully'
+    });
+  })
