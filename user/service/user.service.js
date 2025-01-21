@@ -41,3 +41,30 @@ export const userUpdate = async(id, data)=>{
    return user;
 }
 
+// get all users 
+
+export const getAllUsers = async ()=>{
+  const usersList = await User.find();
+
+  if(!usersList)
+    throw new appError("Can't get users")
+  return usersList
+}
+
+// get user by id
+export const getUserById = async (id)=>{
+  const user = await User.findById(id);
+  if(!user)
+    throw new appError("User not found")
+  return user
+}
+
+// delete user 
+export const deleteUserById = async (id)=>{
+ 
+  const user = await User.findByIdAndDelete(id);
+
+  if(!user)
+    throw new appError('User not found')
+  return user
+}

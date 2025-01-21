@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
     {
         name: { type: String, required: true, trim: true },
         email: { type: String, required: true, unique: true, trim: true },
-        password: { type: String, select: false, required: function() { return !this.googleId; } },
+        password: { type: String, required: function() { return !this.googleId; } },
         googleId: { type: String },
         profilePic: { type: String, default: null },
         age: { type: Number, min: 0 },

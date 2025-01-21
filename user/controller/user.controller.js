@@ -1,6 +1,6 @@
 import asyncWrapper from '../../middlewares/asyncWrapper.js'
 import bcrypt from 'bcryptjs'
-import { addUser, userLogin, userUpdate} from '../service/user.service.js'
+import { addUser, deleteUserById, getAllUsers, getUserById, userLogin, userUpdate} from '../service/user.service.js'
 
 export const userSignup= asyncWrapper(async(req,res,next) => {
     const user= {
@@ -63,7 +63,7 @@ export const userSignup= asyncWrapper(async(req,res,next) => {
       achievements: req.body.achievements,
       workoutHistory: req.body.workoutHistory,
      }
-     await userUpdate(id, user);
+     user = await userUpdate(id, user, {new: true});
      res.status(200).json({
       data: user,
       success: true,
@@ -74,11 +74,11 @@ export const userSignup= asyncWrapper(async(req,res,next) => {
 
   export const changePassword = asyncWrapper (async (req, res, next)=>{
     const {id} = req.params;
-    const user = {
+    let user = {
       password: await bcrypt.hash(req.body.password,10)
     }
 
-    await userUpdate(id, user);
+    user = await userUpdate(id, user, {new: true});
 
     res.status(200).json({
       data: user,
@@ -87,3 +87,38 @@ export const userSignup= asyncWrapper(async(req,res,next) => {
       message: 'Password updated successfully'
     });
   })
+
+  // get all users
+export const getUsers = asyncWrapper (async(req,res,next)=>{
+  const usersList = await getAllUsers();
+  res.status(200).json({
+    data: usersList,
+    success: true,
+    error:false,
+    message: 'All Users'
+  });
+})
+
+// get user by id 
+export const getOneUser = asyncWrapper(async (req, res, next)=>{
+  const user = await getUserById(req.params.id)
+
+  res.status(200).json({
+    data: user,
+    success: true,
+    error:false,
+    message: ''
+  });
+})
+
+// delete user
+export const deleteOneUser = asyncWrapper( async (req, res, next )=>{
+  const user = await deleteUserById(req.params.id)
+
+  res.status(200).json({
+    data: user,
+    success: true,
+    error:false,
+    message: 'User Deleted successfully'
+  });
+})
