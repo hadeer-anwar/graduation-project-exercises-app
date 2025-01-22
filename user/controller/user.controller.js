@@ -1,9 +1,16 @@
 import asyncWrapper from '../../middlewares/asyncWrapper.js'
 import bcrypt from 'bcryptjs'
-import { addUser, deleteUserById, getAllUsers, getUserById, userLogin, userUpdate} from '../service/user.service.js'
+import { addUser, changeRole, deleteUserById, getAllUsers, getUserById, userLogin, userUpdate} from '../service/user.service.js'
+
+const tokenOption = {
+  httpOnly: true,     // prevent xss attack
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'Strict',   // prevent csrf attack
+  maxAge: 7 * 24 * 60 * 60 * 1000, // Cookie valid for 7 days
+}
 
 export const userSignup= asyncWrapper(async(req, res, next) => {
-    let user= {
+    let userData= {
       name:req.body.name,
       email:req.body.email,
       password:req.body.password,
@@ -17,26 +24,25 @@ export const userSignup= asyncWrapper(async(req, res, next) => {
       activityLevel: req.body.activityLevel,
       achievements: req.body.achievements,
       workoutHistory: req.body.workoutHistory,
+      role: req.body.role
     }
-    user = await addUser(user);
-    res.status(201).json({
-      data: user,
-      success: true,
-      error:false,
-      message: 'User registered successfully'
-    });
+    const {user,token} = await addUser(userData);
+
+    res.status(201).cookie("token",token,tokenOption).json({
+        success:true,
+        message:"User Registered successfully ",
+        data:{
+            user,
+            token
+        }
+    })
   })
 
 
   export const userSignin = asyncWrapper(async (req, res , next) => {
     const {email, password} = req.body;
   const {user,token} = await userLogin(email, password);
-    const tokenOption = {
-      httpOnly: true,     // prevent xss attack
-      secure: true,
-      sameSite: 'Strict',   // prevent csrf attack
-      maxAge: 7 * 24 * 60 * 60 * 1000, // Cookie valid for 7 days
-    }
+  
     res.status(200).cookie("token",token,tokenOption).json({
         success:true,
         message:"User Logged In",
@@ -74,20 +80,22 @@ export const userSignup= asyncWrapper(async(req, res, next) => {
   })
 
   export const changePassword = asyncWrapper (async (req, res, next)=>{
-    const {id} = req.params;
-    let user = {
+    
+    const userData = {
       password: await bcrypt.hash(req.body.password,10),
       passwordChangedAt: Date.now(),
     }
 
-    user = await userUpdate(id, user, {new: true});
-    //console.log(user.passwordChangedAt)
-    res.status(200).json({
-      data: user,
-      success: true,
-      error:false,
-      message: 'Password updated successfully'
-    });
+    const {user, token} = await userUpdatePassword(req.params.id, userData, {new: true});
+    
+    res.status(200).cookie("token",token,tokenOption).json({
+      success:true,
+      message: "Password updated successfully",
+      data:{
+          user,
+          token
+      }
+  })
   })
 
   // get all users
@@ -122,5 +130,16 @@ export const deleteOneUser = asyncWrapper( async (req, res, next )=>{
     success: true,
     error:false,
     message: 'User Deleted successfully'
+  });
+})
+
+export const changeUserRole = asyncWrapper (async (req, res, next)=>{
+
+  const user = await  changeRole(req.params.id, {role: req.body.role});
+  res.status(200).json({
+    data: user,
+    success: true,
+    error:false,
+    message: 'Role changed successfully'
   });
 })

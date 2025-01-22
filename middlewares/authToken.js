@@ -22,7 +22,7 @@ export const authToken = asyncWrapper(async (req, res, next) => {
   }
 
   // Attach the user ID to the request
-  req.user = { _id: decoded._id };
+  req.user = { _id: decoded._id, role: decoded.role };
 
   // Check if the user exists in the database
   const currentUser = await User.findById(req.user._id);

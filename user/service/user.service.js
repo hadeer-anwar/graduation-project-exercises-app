@@ -10,7 +10,10 @@ export const addUser = async (data) =>{
   if(!user) 
     throw new appError('Can not create user');  
   
-  return user;
+  return {
+    user,
+    token :generateToken({_id:user._id , email:user.email, role: user.role})
+}
 }
 
 //login 
@@ -28,19 +31,28 @@ export const userLogin = async(email, password)=>{
       throw new appError("Invalid Credentials", 401);
   return {
       user,
-      token :generateToken({_id:user._id , email:user.email})
+      token :generateToken({_id:user._id , email:user.email, role: user.role})
   }
 }
 
 // update user info 
 
 export const userUpdate = async(id, data)=>{
-   const user = User.findByIdAndUpdate(id, data);
+   const user = User.findByIdAndUpdate(id, data, {new: true});
    if(!user)
      throw new appError("Can't update user information");
    return user;
 }
 
+export const userUpdatePassword = async (id, data)=>{
+  const user = User.findByIdAndUpdate(id, data, {new: true});
+  if(!user)
+    throw new appError("Can't update password");
+  return {
+    user,
+    token :generateToken({_id:user._id , email:user.email, role: user.role})
+}
+}
 // get all users 
 
 export const getAllUsers = async ()=>{
@@ -66,5 +78,15 @@ export const deleteUserById = async (id)=>{
 
   if(!user)
     throw new appError('User not found')
+  return user
+}
+
+export const changeRole = async (id, data)=>{
+
+  const user = await User.findByIdAndUpdate(id,data, {new: true});
+
+  if(!user)
+    throw new appError("Can't change role");
+
   return user
 }
