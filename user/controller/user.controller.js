@@ -2,11 +2,12 @@ import asyncWrapper from '../../middlewares/asyncWrapper.js'
 import bcrypt from 'bcryptjs'
 import { addUser, deleteUserById, getAllUsers, getUserById, userLogin, userUpdate} from '../service/user.service.js'
 
-export const userSignup= asyncWrapper(async(req,res,next) => {
-    const user= {
+export const userSignup= asyncWrapper(async(req, res, next) => {
+    let user= {
       name:req.body.name,
       email:req.body.email,
       password:req.body.password,
+      passwordChangedAt: req.body.passwordChangedAt,
       googleId:req.body.googleId,
       profilePic: req.body.profilePic,
       age: req.body.age,
@@ -17,7 +18,7 @@ export const userSignup= asyncWrapper(async(req,res,next) => {
       achievements: req.body.achievements,
       workoutHistory: req.body.workoutHistory,
     }
-    await addUser(user);
+    user = await addUser(user);
     res.status(201).json({
       data: user,
       success: true,
@@ -75,11 +76,12 @@ export const userSignup= asyncWrapper(async(req,res,next) => {
   export const changePassword = asyncWrapper (async (req, res, next)=>{
     const {id} = req.params;
     let user = {
-      password: await bcrypt.hash(req.body.password,10)
+      password: await bcrypt.hash(req.body.password,10),
+      passwordChangedAt: Date.now(),
     }
 
     user = await userUpdate(id, user, {new: true});
-
+    //console.log(user.passwordChangedAt)
     res.status(200).json({
       data: user,
       success: true,

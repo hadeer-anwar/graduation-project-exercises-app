@@ -1,27 +1,40 @@
+import jwt from 'jsonwebtoken';
 import appError from "../utils/appError.js";
 import asyncWrapper from "./asyncWrapper.js";
-import jwt from 'jsonwebtoken';
+import User from "../user/model/user.model.js"; 
 
 export const authToken = asyncWrapper(async (req, res, next) => {
-  // Retrieve token from cookies or headers
-  const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
-  
-  console.log("Token received:", token); // For debugging
+  const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     throw new appError("User not logged in", 401);
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      console.log("JWT verification error:", err); // Debugging log
-      throw new appError("Invalid token", 401);
+  let decoded;
+  try {
+    // Verify the token synchronously
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      throw new appError("Token has expired", 401);
     }
-    
-    // Initialize req.user and set the id from decoded token
-    req.user = { id: decoded._id }; 
-    console.log("Decoded user:", req.user); // For debugging
+    throw new appError("Invalid token", 401);
+  }
 
-    next();
-  });
+  // Attach the user ID to the request
+  req.user = { _id: decoded._id };
+
+  // Check if the user exists in the database
+  const currentUser = await User.findById(req.user._id);
+  if (!currentUser) {
+    throw new appError("This user doesn't exist", 401);
+  }
+ if(currentUser.passwordChangedAt){
+  const passwordChangedTimestamp = parseInt(currentUser.passwordChangedAt.getTime() /1000, 10);
+  if(passwordChangedTimestamp > decoded.iat ){
+    throw new appError("Password changed, Login again", 401);
+  }
+ }  
+  next(); // Proceed to the next middleware
 });
+

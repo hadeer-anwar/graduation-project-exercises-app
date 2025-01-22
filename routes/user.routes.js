@@ -8,8 +8,8 @@ const userRouter = express.Router();
 
 userRouter.post("/signup",createUserValidator,validatorMiddleware, userSignup);
 userRouter.post("/login", userSignin);
-userRouter.put("/:id",dynamicUserValidators, validatorMiddleware, updateUser);
-userRouter.put("/changePassword/:id", passwordValidator, validatorMiddleware, changePassword)
+userRouter.put("/:id", authToken, dynamicUserValidators, validatorMiddleware, updateUser);
+userRouter.put("/changePassword/:id", authToken, passwordValidator, validatorMiddleware, changePassword)
 userRouter.get("/", authToken, getUsers)
 userRouter.get("/:id", authToken, getOneUser)
 userRouter.delete("/:id", authToken, deleteOneUser )
