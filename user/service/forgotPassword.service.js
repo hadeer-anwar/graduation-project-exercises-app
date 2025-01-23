@@ -3,7 +3,7 @@ import { generateResetCode, hashResetCode } from "../../utils/generateResetCode.
 import appError from "../../utils/appError.js";
 import { sendEmail } from "../../utils/emailService.js";
 import bcrypt from 'bcryptjs'
-
+import generateToken from '../../utils/generateToken.js'
 
 
 export const ForgotPassword = async (email) => {
@@ -50,5 +50,7 @@ export const ForgotPassword = async (email) => {
     user.resetCodeExpiry = undefined;
     await user.save();
   
-    return 'Password reset successful';
+    return {
+       message:'Password reset successful',
+       token :generateToken({_id:user._id , email:user.email, role: user.role})}
   };
