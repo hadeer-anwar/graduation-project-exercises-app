@@ -8,7 +8,6 @@ export const authorizeRole = (role) => {
     }
 
     const userRole = req.user.role;
-
     if (userRole !== role) {
       return next(new appError("Access denied!", 403));
     }

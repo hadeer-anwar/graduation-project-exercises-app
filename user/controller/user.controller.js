@@ -143,3 +143,35 @@ export const changeUserRole = asyncWrapper (async (req, res, next)=>{
     message: 'Role changed successfully'
   });
 })
+
+export const getMyProfile = asyncWrapper(async (req, res, next)=>{
+  console.log("from my profile")
+  const {_id} = req.user;
+  console.log("user id ", _id)
+  const user = await getUserById(_id);
+
+  res.status(200).json({
+    data: user,
+    success: true,
+    error:false,
+    message: ''
+  });
+
+})
+
+// export const logoutUser = asyncWrapper (async(req, res, next)=>{
+  
+//     res.cookie("token", "", {
+//       httpOnly: true, // Prevent XSS
+//       secure: process.env.NODE_ENV === "production", // Secure in production
+//       sameSite: "Strict", // Prevent CSRF
+//       expires: new Date(0), // Expire immediately
+//     });
+//     res.status(200).json({
+//       data:"",
+//       success: true,
+//       error:false,
+//       message: 'Logged out successfully'
+//     });
+  
+// })
