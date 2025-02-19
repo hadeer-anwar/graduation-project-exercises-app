@@ -12,6 +12,7 @@ import passport from 'passport'
 import router from './routes/auth.js'
 import './passport.js'
 import workoutRouter from './routes/workout.routes.js';
+import challengeRouter from './routes/challenge.routes.js';
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.get("/", (req, res) => {
 app.use(`/api/v1/users`, userRouter);
 app.use('/api/v1/auth', router);
 app.use('/api/v1/workout',workoutRouter);
+app.use('/api/v1/challenge',challengeRouter);
 
 // Error handling
 app.use(errorHandler);

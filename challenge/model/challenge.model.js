@@ -5,8 +5,10 @@ const ChallengeSchema = new mongoose.Schema(
  
   challengeType: { 
     type: String,
-    enum: ["days_per_week", "exercise_reps", "run_distance"],
     required: true },
+  description:{
+    type: String,
+  },
 
   target: {
      type: Number,
@@ -17,7 +19,7 @@ const ChallengeSchema = new mongoose.Schema(
     default: 0 
   },
 
-  exerciseType: { 
+  exercise: { 
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Exercise'
    },
