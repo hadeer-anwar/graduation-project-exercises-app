@@ -3,17 +3,13 @@ import Exercise from "../../exercise/model/exercise.model.js";
 
 const workoutSchema = new mongoose.Schema(
     {
+      name: {
+        type: String, 
+        required: true,
+      },
         description: {
             type: String, 
             trim: true,
-          },
-        goal: {type: String},
-        duration: {
-            type: Number, // Duration in minutes
-            required: true,
-          },
-          totalCaloriesBurned: {
-            type: Number, 
           },
           exercises: [
             {

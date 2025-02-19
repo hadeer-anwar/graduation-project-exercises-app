@@ -7,26 +7,35 @@ const exerciseSchema = new mongoose.Schema(
       required: true, 
       trim: true,
     },
-    targetMuscle: {
+
+    description: {
       type: String,
-      enum: ["chest", "back", "legs", "arms", "shoulders", "core"],
-      required: true, // Primary muscle targeted
+      required: true, 
+      trim: true,
     },
+
+    targetMuscles:[ {
+      type: String,
+      required: true,
+    }],
+
     equipment: {
       type: String,
       enum: ["bodyweight", "dumbbell", "barbell", "machine", "resistance band"],
       default: "bodyweight",
     },
+
     difficulty: {
       type: String,
-      enum: ["easy", "medium", "hard"],
-      default: "medium",
+      enum: ["beginner", "intermediate", "advanced"],
+      default: "beginner",
     },
-    caloriesPerRep: {
-      type: Number, // Calories burned per repetition (approximation)
-      default: 0,
-    },
-    videoTutorial: {type: String},
+   
+    videoUrl: {type: String},
+    
+    imagesUrl: [
+      {type: String}
+    ]
   },
   {
     timestamps: true, 

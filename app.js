@@ -11,6 +11,7 @@ import session from 'express-session'
 import passport from 'passport'
 import router from './routes/auth.js'
 import './passport.js'
+import workoutRouter from './routes/workout.routes.js';
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.get("/", (req, res) => {
 
 app.use(`/api/v1/users`, userRouter);
 app.use('/api/v1/auth', router);
+app.use('/api/v1/workout',workoutRouter);
 
 // Error handling
 app.use(errorHandler);
