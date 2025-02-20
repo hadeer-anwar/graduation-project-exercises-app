@@ -21,21 +21,19 @@ const exerciseSchema = new mongoose.Schema(
 
     equipment: {
       type: String,
-      enum: ["bodyweight", "dumbbell", "barbell", "machine", "resistance band"],
       default: "bodyweight",
     },
 
     difficulty: {
       type: String,
-      enum: ["beginner", "intermediate", "advanced"],
       default: "beginner",
     },
    
-    videoUrl: {type: String},
+    videoUrl: [{type: String}],
     
-    imagesUrl: [
+    imageUrl: 
       {type: String}
-    ]
+    
   },
   {
     timestamps: true, 

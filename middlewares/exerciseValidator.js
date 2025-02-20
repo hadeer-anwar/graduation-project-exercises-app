@@ -1,4 +1,4 @@
-import { validateExercise } from "../validations/exercise.validation.js";
+import { validateExercise } from "../validators/exercise.validation.js";
 
 export const exerciseValidator = (req, res, next) => {
   const { error } = validateExercise(req.body);

@@ -11,21 +11,19 @@ import { changePassword,
 
 import { authToken } from "../middlewares/authToken.js";
 
-import { createUserValidator, 
-         dynamicUserValidators, 
-         passwordValidator } from "../validators/userValidator.js";
 
-import { validatorMiddleware } from "../middlewares/validator.js";
+
+import { userValidator, passwordValidator, userUpdateValidator } from "../middlewares/userValidator.js";
 
 import {authorizeRole} from '../middlewares/authorizeRole.js';
 import { forgotPassword, resetPassword } from "../user/controller/forgotPassword.controller.js";
 
 const userRouter = express.Router();
 
-userRouter.post("/signup",createUserValidator,validatorMiddleware, userSignup);
+userRouter.post("/signup",userValidator, userSignup);
 userRouter.post("/login", userSignin);
-userRouter.put("/:id", authToken, dynamicUserValidators, validatorMiddleware, updateUser);
-userRouter.put("/change-password/:id", authToken, passwordValidator, validatorMiddleware, changePassword)
+userRouter.put("/:id", authToken, userUpdateValidator, updateUser);
+userRouter.put("/change-password/:id", authToken, passwordValidator, changePassword)
 
 userRouter.post("/forgot-password", forgotPassword)
 userRouter.post("/reset-password", resetPassword)
