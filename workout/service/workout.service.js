@@ -29,13 +29,15 @@ export const getWorkoutById = async (workoutId) => {
   const workout = await Workout.findById(workoutId);
   if(!workout) 
     throw new appError("Can't get workout");
+  return workout;
 };
 
 // get workout by id and their exercise
 export const getWorkoutByIdWithExercises = async (workoutId) => {
-    const workout = await Workout.find(workoutId).populate("exercises"); // Populates exercises with their details
+    const workout = await Workout.findById(workoutId).populate("exercises"); // Populates exercises with their details
     if(!workout) 
       throw new appError("Can't get workout exercises");
+    return workout;
   };
 
 

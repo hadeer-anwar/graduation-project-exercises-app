@@ -17,6 +17,7 @@ const exerciseSchema = new mongoose.Schema(
     targetMuscles:[ {
       type: String,
       required: true,
+      minlength: 3
     }],
 
     equipment: {
@@ -32,7 +33,12 @@ const exerciseSchema = new mongoose.Schema(
     videoUrl: [{type: String}],
     
     imageUrl: 
-      {type: String}
+      [{type: String}],
+
+    workoutName: {
+      type: String,
+      required : true
+    }  
     
   },
   {

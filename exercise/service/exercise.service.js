@@ -1,17 +1,26 @@
 import appError from "../../utils/appError.js";
+import Workout from "../../workout/model/workout.model.js";
 import Exercise from "../model/exercise.model.js"
 
 
-export const createExercise = async (data)=>{
+export const createExercise = async (data) => {
+  const { workoutName } = data;
+  const workout = await Workout.findOne({ name: workoutName });
+  if (!workout) 
+    throw appError("Workout not found");
+  
+  const newExercise = await Exercise.create(data);
+  if (!newExercise)
+     throw appError("Couldn't create exercise");
 
-  const newExercise = Exercise.create(data);
-  if(! newExercise)
-    throw new appError("Couldn't create exercise")
+  workout.exercises.push(newExercise._id);
+  await workout.save();
 
-  return newExercise
+  return newExercise;
+};
 
-}
 
+// get all exercises 
 export const getAllExercises = async () => {
   const allExercises = await Exercise.find();
 

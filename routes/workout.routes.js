@@ -6,11 +6,20 @@ import { createWorkout,
          deleteWorkout, 
          getWorkoutByIdWithExercises } from "../workout/controller/workout.controller.js";
 import { workoutValidator } from "../middlewares/workoutValidator.js";
+import { uploadFiles } from "../cloudinary/cloudinaryConfig.js";
 
 
 const workoutRouter = express.Router();
 
-workoutRouter.post("/create",workoutValidator, createWorkout);
+workoutRouter.post(
+    "/create", 
+    uploadFiles.fields([
+    { name: "image", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ]),
+  workoutValidator, 
+  createWorkout);
+
 workoutRouter.get("/", getAllWorkouts);
 workoutRouter.get("/:workoutId", getWorkoutById);
 workoutRouter.get("/workout-exercises/:workoutId", getWorkoutByIdWithExercises)

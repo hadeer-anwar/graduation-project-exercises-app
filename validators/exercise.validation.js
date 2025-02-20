@@ -16,16 +16,9 @@ const validateExercise = (data) => {
       "any.required": "Description is required",
     }),
 
-    targetMuscles: Joi.array()
-      .items(Joi.string().trim().min(2).messages({
-        "string.empty": "Muscle name cannot be empty",
-        "string.min": "Muscle name must be at least 2 characters",
-      }))
-      .min(1)
+    targetMuscles: Joi
       .required()
       .messages({
-        "array.base": "Target muscles must be an array",
-        "array.min": "At least one target muscle is required",
         "any.required": "Target muscles are required",
       }),
 
@@ -52,6 +45,9 @@ const validateExercise = (data) => {
         "string.uri": "Invalid image URL format",
       }))
       .optional(),
+     workoutName: Joi.string().trim().required().messages({
+      "string.empty": "Workout name cannot be empty",
+    }),
   });
 
   return exerciseSchema.validate(data, { abortEarly: false });

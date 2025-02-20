@@ -3,10 +3,12 @@ import asyncWrapper from '../../middlewares/asyncWrapper.js'
 // Create a new workout
 
 export const createWorkout = asyncWrapper( async (req, res, next)=>{
+    const imageUrl = req.files?.image ? req.files.image[0].path : "";
     const data = {
         name: req.body.name,
         description: req.body.description,
-        exercises: req.body.exercises
+        exercises: req.body.exercises,
+        imageUrl
     }
     const workout = await workoutService.createWorkout(data);
     res.status(201).json({
@@ -55,12 +57,12 @@ export const getWorkoutByIdWithExercises = asyncWrapper( async (req, res, next)=
 // Update workout
 export const updateWorkout = asyncWrapper(async (req,res, next)=>{
     const { workoutId } = req.params;
-    const data = req.body;
-    const updatedWorkout = await workoutService.updateWorkout(workoutId, data);
+    const workoutData = req.body;
+    const updatedWorkout = await workoutService.updateWorkout(workoutId, workoutData);
     res.status(200).json({
         success:true,
         message:"workout updataed successfully",
-        data:updateWorkout
+        data:updatedWorkout
     })
 })
 

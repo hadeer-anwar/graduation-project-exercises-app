@@ -12,23 +12,7 @@ export const validateWorkout = (data) => {
     description: Joi.string().max(300).optional().messages({
       "string.max": "Description must be at most 300 characters",
     }),
-    exercises: Joi.array()
-      .items(
-        Joi.string()
-          .trim()
-          .min(1)
-          .messages({
-            "string.empty": "Exercise name cannot be empty",
-            "string.min": "Exercise name must be at least 1 character",
-          })
-      )
-      .min(1)
-      .required()
-      .messages({
-        "array.base": "Exercises must be an array",
-        "array.min": "At least one exercise is required",
-        "any.required": "Exercises are required",
-      }),
+  
   });
 
   return schema.validate(data, { abortEarly: false });

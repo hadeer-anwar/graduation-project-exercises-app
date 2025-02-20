@@ -2,9 +2,12 @@ import mongoose from "mongoose";
 
 const workoutSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true, minlength: 3, maxlength: 100 },
+    name: { type: String, required: true, minlength: 3, maxlength: 100 },
     description: { type: String, trim: true, maxlength: 300 },
-    exercises: [String],
+    imageUrl: [{type: String}],
+    exercises: [{type: mongoose.Types.ObjectId,
+      ref: 'Exercise'
+    }],
   },
   { timestamps: true }
 );

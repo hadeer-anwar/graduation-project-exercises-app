@@ -1,25 +1,32 @@
 import asyncWrapper from "../../middlewares/asyncWrapper.js";
 import * as exerciseService from "../service/exercise.service.js";
 
-export const createExercise = asyncWrapper(async(req,res,next)=>{
-    const data = {
-       name: req.body.name,
-       description: req.body.description,
-       targetMuscles: req.body.targetMuscles,
-       equipment: req.body.equipment,
-       difficulty: req.body.difficulty,
-       videoUrl : req.body.videoUrl,
-       imgUrl: req.body.imgUrl
-    }
 
-    const exercise = await exerciseService.createExercise(data);
+export const createExercise = asyncWrapper(async (req, res, next) => {
+  // Retrieve the uploaded file URLs from req.files
+  const imageUrl = req.files?.image ? req.files.image[0].path : "";
+  const videoUrl = req.files?.video ? req.files.video[0].path : "";
+  
+  const data = {
+    name: req.body.name,
+    description: req.body.description,
+    targetMuscles: req.body.targetMuscles, 
+    equipment: req.body.equipment || "bodyweight",
+    difficulty: req.body.difficulty || "beginner",
+    imageUrl, 
+    videoUrl: videoUrl ? [videoUrl] : [], 
+    workoutName: req.body.workoutName
+  };
+  
+  const exercise = await exerciseService.createExercise(data);
 
-    res.status(201).json({
-        success: true,
-        message: "Exercise created successfully",
-        data: exercise
-    })
-})
+  res.status(201).json({
+    success: true,
+    message: "Exercise created successfully",
+    data: exercise,
+  });
+});
+
 
 
 
