@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import Challenge from "../../challenge/model/challenge.model.js";
-import Workout from "../../workout/model/workout.model.js";
+
 
 const userSchema = new mongoose.Schema(
   {

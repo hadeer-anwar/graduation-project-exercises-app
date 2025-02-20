@@ -23,7 +23,7 @@ export const getAllWorkouts = asyncWrapper( async (req, res, next)=>{
     const workouts = await workoutService.getAllWorkouts();
     res.status(200).json({
         success:true,
-        message:"All Workouts ",
+        message:"All Workouts retrieved successfully",
         data:workouts
     })
 })
