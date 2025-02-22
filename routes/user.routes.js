@@ -34,4 +34,5 @@ userRouter.get("/", authToken, authorizeRole("admin"), getUsers)
 userRouter.get("/:id", authToken, authorizeRole("admin"), getOneUser)
 userRouter.delete("/:id", authToken, authorizeRole("admin"), deleteOneUser )
 userRouter.put("/changeRole/:id", authToken, authorizeRole("admin"), changeUserRole)
+userRouter.put("")
 export default userRouter;

@@ -1,6 +1,7 @@
 import User from "../model/user.model.js";
 import appError from '../../utils/appError.js'
 import generateToken from "../../utils/generateToken.js";
+import Challenge from "../../challenge/model/challenge.model.js";
 
 
 // add user
@@ -90,4 +91,6 @@ export const changeRole = async (id, data)=>{
 
   return user
 }
+
+
 

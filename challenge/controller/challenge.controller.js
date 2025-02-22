@@ -1,16 +1,32 @@
 import * as challengeService from "../service/challenge.service.js";
 import asyncWrapper from "../../middlewares/asyncWrapper.js";
 
-// Create new challenge
-
+// ✅ Create a new challenge
 export const createChallenge = asyncWrapper(async (req, res, next) => {
-  const data = {
-    challengeType: req.body.challengeType,
-    target: req.body.target,
-    points: req.body.points,
-    exercise: req.body.exercise
-  };
-  const challenge = await challengeService.createChallenge(data);
+  const { challengeType, 
+          description, 
+          requiredDays,
+          dailyTarget, 
+          exercises, 
+          pointsPerDay, 
+          totalPoints, 
+          lastUpdated,
+          streakDays,
+        completedDays } = req.body;
+
+  const challenge = await challengeService.createChallenge({
+    challengeType,
+    description,
+    requiredDays,
+    dailyTarget,
+    exercises,
+    pointsPerDay,
+    totalPoints,
+    lastUpdated,
+    streakDays,
+    completedDays
+  });
+
   res.status(201).json({
     success: true,
     message: "Challenge created successfully",
@@ -18,19 +34,17 @@ export const createChallenge = asyncWrapper(async (req, res, next) => {
   });
 });
 
-// Get all challenges
-
+// ✅ Get all challenges
 export const getAllChallenges = asyncWrapper(async (req, res, next) => {
   const challenges = await challengeService.getAllChallenges();
   res.status(200).json({
     success: true,
-    message: "All Challenges",
+    message: "All challenges",
     data: challenges,
   });
 });
 
-// Get challenge by ID
-
+// ✅ Get challenge by ID
 export const getChallengeById = asyncWrapper(async (req, res, next) => {
   const { challengeId } = req.params;
   const challenge = await challengeService.getChallengeById(challengeId);
@@ -41,12 +55,10 @@ export const getChallengeById = asyncWrapper(async (req, res, next) => {
   });
 });
 
-// Update challenge
-
+// ✅ Update a challenge
 export const updateChallenge = asyncWrapper(async (req, res, next) => {
   const { challengeId } = req.params;
-  const data = req.body;
-  const updatedChallenge = await challengeService.updateChallenge(challengeId, data);
+  const updatedChallenge = await challengeService.updateChallenge(challengeId, req.body);
   res.status(200).json({
     success: true,
     message: "Challenge updated successfully",
@@ -54,14 +66,24 @@ export const updateChallenge = asyncWrapper(async (req, res, next) => {
   });
 });
 
-// Delete challenge
-
+// ✅ Delete a challenge
 export const deleteChallenge = asyncWrapper(async (req, res, next) => {
   const { challengeId } = req.params;
-  const deletedChallenge = await challengeService.deleteChallenge(challengeId);
+  await challengeService.deleteChallenge(challengeId);
   res.status(200).json({
     success: true,
     message: "Challenge deleted successfully",
-    data: deletedChallenge,
+  });
+});
+
+export const updateUserChallenge = asyncWrapper(async (req, res, next) => {
+  const { userId, challengeId, completedReps } = req.body;
+
+  const progress = await challengeService.updateChallengeProgress(userId,challengeId,completedReps)
+
+  res.status(200).json({
+    success: true,
+    message: "Challenge progress updated successfully",
+    data: progress,
   });
 });

@@ -1,6 +1,7 @@
 import asyncWrapper from '../../middlewares/asyncWrapper.js'
 import bcrypt from 'bcryptjs'
-import { addUser, changeRole, deleteUserById, getAllUsers, getUserById, userLogin, userUpdate} from '../service/user.service.js'
+import { addUser, changeRole, deleteUserById, getAllUsers, getUserById,
+   userLogin, userUpdate, userUpdatePassword } from '../service/user.service.js'
 
 const tokenOption = {
   httpOnly: true,     // prevent xss attack
@@ -158,6 +159,8 @@ export const getMyProfile = asyncWrapper(async (req, res, next)=>{
   });
 
 })
+
+
 
 // export const logoutUser = asyncWrapper (async(req, res, next)=>{
   
