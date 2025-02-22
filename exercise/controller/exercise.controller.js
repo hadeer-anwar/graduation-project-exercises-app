@@ -3,7 +3,7 @@ import * as exerciseService from "../service/exercise.service.js";
 
 
 export const createExercise = asyncWrapper(async (req, res, next) => {
-  // Retrieve the uploaded file URLs from req.files
+  
   const imageUrl = req.files?.image ? req.files.image[0].path : "";
   const videoUrl = req.files?.video ? req.files.video[0].path : "";
   
@@ -11,6 +11,7 @@ export const createExercise = asyncWrapper(async (req, res, next) => {
     name: req.body.name,
     description: req.body.description,
     targetMuscles: req.body.targetMuscles, 
+    secondaryMuscles: req.body.secondaryMuscles,
     equipment: req.body.equipment || "bodyweight",
     difficulty: req.body.difficulty || "beginner",
     imageUrl, 
@@ -48,8 +49,8 @@ export const getExerciseById = asyncWrapper(async (req, res) => {
 })
 });
 
-export const updateExercise = asyncWrapper(async (req, res) => {
-
+export const updateExercise = asyncWrapper(async (req, res , next) => {
+  console.log("secondary",req.body)
   const updatedExercise = await exerciseService.updateExercise(req.params.id, req.body);
   res.status(200).json({
     success: true,

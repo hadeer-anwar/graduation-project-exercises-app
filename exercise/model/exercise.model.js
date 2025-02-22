@@ -19,6 +19,11 @@ const exerciseSchema = new mongoose.Schema(
       required: true,
       minlength: 3
     }],
+    secondaryMuscles:[ {
+      type: String,
+      required: true,
+      minlength: 3
+    }],
 
     equipment: {
       type: String,
@@ -45,6 +50,12 @@ const exerciseSchema = new mongoose.Schema(
     timestamps: true, 
   }
 );
+
+exerciseSchema.pre("deleteOne", { document: true, query: false }, async function (next) {
+  await mongoose.model("Challenge").deleteMany({ exercise: this._id });
+  next();
+});
+
 
 const Exercise = mongoose.model("Exercise", exerciseSchema);
 

@@ -21,7 +21,11 @@ const validateExercise = (data) => {
       .messages({
         "any.required": "Target muscles are required",
       }),
-
+      secondaryMuscles: Joi
+      .required()
+      .messages({
+        "any.required": "Secondary muscles are required",
+      }),
     equipment: Joi.string()
       .valid("bodyweight", "dumbbell", "barbell", "machine", "resistance band")
       .default("bodyweight")
@@ -48,7 +52,7 @@ const validateExercise = (data) => {
      workoutName: Joi.string().trim().required().messages({
       "string.empty": "Workout name cannot be empty",
     }),
-  });
+  }).unknown(true);
 
   return exerciseSchema.validate(data, { abortEarly: false });
 };

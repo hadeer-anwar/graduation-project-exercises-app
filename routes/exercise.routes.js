@@ -17,8 +17,10 @@ exerciseRouter.post(
 );
 
 exerciseRouter.get("/", getAllExercises);
-exerciseRouter.get("/:id", getExerciseById);
-exerciseRouter.put("/:id", exerciseValidator, updateExercise);
+exerciseRouter.get("/:id",getExerciseById);
+exerciseRouter.put("/:id", uploadFiles.fields([
+  { name: "image"},
+  { name: "video"}]),  updateExercise);
 exerciseRouter.delete("/:id", deleteExercise);
 
 export default exerciseRouter;
