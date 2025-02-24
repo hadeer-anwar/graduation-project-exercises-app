@@ -5,26 +5,46 @@ import bcrypt from 'bcryptjs';
 import appError from '../utils/appError.js';
 
 // User creation validation
+
+
 export const validateUser = Joi.object({
-  name: Joi.string().min(2).required().messages({
-    'string.empty': 'User name is required',
-    'string.min': 'User name must be at least 2 characters long'
+  name: Joi.string().trim().required(),
+  email: Joi.string().email().trim().required(),
+  password: Joi.string().min(6).when("googleId", {
+    is: Joi.exist(),
+    then: Joi.optional(),
+    otherwise: Joi.required(),
   }),
-  email: Joi.string().email().required().external(async (val) => {
-    const existingUser = await User.findOne({ email: val });
-    if (existingUser) {
-      throw new appError('Email already in use');
-    }
-  }).messages({
-    'string.empty': 'Email is required',
-    'string.email': 'Invalid email address'
-  }),
-  password: Joi.string().min(6).required().messages({
-    'string.empty': 'Password is required',
-    'string.min': 'Password must be at least 6 characters long'
-  }),
-  profilePic: Joi.string().optional()
-});
+  googleId: Joi.string().optional(),
+  profilePic: Joi.string().uri().optional().allow(null),
+  age: Joi.number().min(0).optional().empty(""),
+  height: Joi.number().min(0).optional().empty(""),
+  weight: Joi.number().min(0).optional().empty(""),
+  fitnessGoal: Joi.string()
+    .valid("lose weight", "build muscle", "maintain fitness", "")
+    .optional(),
+  activityLevel: Joi.string()
+    .valid("sedentary", "active", "highly active", "")
+    .optional(),
+  points: Joi.number().min(0).default(0),
+  achievements: Joi.array().items(Joi.string().hex().length(24)).optional(),
+  workingChallenges: Joi.array().items(
+    Joi.object({
+      challenge: Joi.string().hex().length(24).required(),
+      streakDays: Joi.number().min(0).default(0),
+      completedDays: Joi.number().min(0).default(0),
+      pointsEarned: Joi.number().min(0).default(0),
+      isCompleted: Joi.boolean().default(false),
+      lastUpdated: Joi.date().optional(),
+    })
+  ),
+  workoutHistory: Joi.array().items(Joi.string().hex().length(24)).optional(),
+  role: Joi.string().valid("user", "admin").default("user"),
+}).unknown(true); // Allows extra fields not defined in the schema
+
+
+
+
 
 // Password update validation
 export const validateUserPassword = Joi.object({

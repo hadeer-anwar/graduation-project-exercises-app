@@ -16,7 +16,7 @@ import { authToken } from "../middlewares/authToken.js";
 import { userValidator, passwordValidator, userUpdateValidator } from "../middlewares/userValidator.js";
 
 import {authorizeRole} from '../middlewares/authorizeRole.js';
-import { forgotPassword, resetPassword } from "../user/controller/forgotPassword.controller.js";
+import { checkResetCodeController, forgotPassword, resetPasswordController } from "../user/controller/forgotPassword.controller.js";
 
 const userRouter = express.Router();
 
@@ -26,7 +26,8 @@ userRouter.put("/:id", authToken, userUpdateValidator, updateUser);
 userRouter.put("/change-password/:id", authToken, passwordValidator, changePassword)
 
 userRouter.post("/forgot-password", forgotPassword)
-userRouter.post("/reset-password", resetPassword)
+userRouter.post("/check-otp", checkResetCodeController)
+userRouter.post("/reset-password", resetPasswordController)
 userRouter.get("/my-profile", authToken, getMyProfile)
 
 

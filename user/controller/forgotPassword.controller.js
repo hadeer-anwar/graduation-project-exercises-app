@@ -1,5 +1,5 @@
 import asyncWrapper from '../../middlewares/asyncWrapper.js'
-import { ForgotPassword, ResetPassword } from '../service/forgotPassword.service.js';
+import { ForgotPassword, resetPassword , checkResetCode} from '../service/forgotPassword.service.js';
 const tokenOption = {
   httpOnly: true,     // prevent xss attack
   secure: process.env.NODE_ENV === 'production',
@@ -16,12 +16,28 @@ export const forgotPassword = asyncWrapper(async (req, res) => {
       });
   });
   
-  export const resetPassword = asyncWrapper(async (req, res) => {
-    const { email, resetCode, newPassword } = req.body;
-    const result = await ResetPassword(email, resetCode, newPassword);
-    res.status(200).cookie("token",token,tokenOption).json({
-        success: true,
-        error:false,
-        result
-      });
+// Validate Reset Code
+export const checkResetCodeController = asyncWrapper(async (req, res) => {
+  const { email, resetCode } = req.body;
+
+  await checkResetCode(email, resetCode);
+
+  res.status(200).json({
+    success: true,
+    error: false,
+    message: "Reset code is valid",
   });
+});
+
+// Reset Password
+export const resetPasswordController = asyncWrapper(async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  const result = await resetPassword(email, newPassword);
+
+  res.status(200).cookie("token", result.token, tokenOption).json({
+    success: true,
+    error: false,
+    result,
+  });
+});

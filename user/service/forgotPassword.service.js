@@ -29,28 +29,38 @@ export const ForgotPassword = async (email) => {
     return  'Reset code sent to your email';
   };
   
-  export const ResetPassword = async (email, resetCode, newPassword) => {
-
-    const user = await User.findOne({email});
-    console.log('user: ',user)
+  export const checkResetCode = async (email, resetCode) => {
+    const user = await User.findOne({ email });
     if (!user || !user.resetCode || !user.resetCodeExpiry) {
-      throw new appError('Invalid or expired reset code', 400);
+      throw new appError("Invalid or expired reset code", 400);
     }
+  
     if (user.resetCodeExpiry < Date.now()) {
-    throw new appError('Reset code has expired', 400);
+      throw new appError("Reset code has expired", 400);
     }
-
-    const hashedResetCode = hashResetCode(resetCode)
-  if (hashedResetCode !== user.resetCode) {
-    throw new appError('Invalid reset code', 400);
-  }   
-
-    user.password = await bcrypt.hash(newPassword, 10); 
+  
+    const hashedResetCode = hashResetCode(resetCode);
+    if (hashedResetCode !== user.resetCode) {
+      throw new appError("Invalid reset code", 400);
+    }
+  
+    return { message: "Reset code is valid" };
+  };
+  
+  export const resetPassword = async (email, newPassword) => {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new appError("User not found", 404);
+    }
+  
+    user.password = await bcrypt.hash(newPassword, 10);
     user.resetCode = undefined;
     user.resetCodeExpiry = undefined;
     await user.save();
   
     return {
-       message:'Password reset successful',
-       token :generateToken({_id:user._id , email:user.email, role: user.role})}
+      message: "Password reset successful",
+      token: generateToken({ _id: user._id, email: user.email, role: user.role }),
+    };
   };
+  
