@@ -1,8 +1,7 @@
 import User from "../model/user.model.js";
 import appError from '../../utils/appError.js'
 import generateToken from "../../utils/generateToken.js";
-import Challenge from "../../challenge/model/challenge.model.js";
-
+import bcrypt from 'bcrypt';
 
 // add user
 
@@ -44,6 +43,43 @@ export const userUpdate = async(id, data)=>{
      throw new appError("Can't update user information");
    return user;
 }
+
+
+export const checkCurrentPassword = async (userId, currentPassword) => {
+ 
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new appError("User not found", 404);
+  }
+
+  const isCorrect = await bcrypt.compare(currentPassword, user.password);
+  if (!isCorrect) {
+    throw new appError("Incorrect current password", 400);
+  }
+
+  return user; 
+};
+
+/**
+ * Update user password
+ */
+export const updateUserPassword = async (userId, newPassword) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new appError("User not found", 404);
+  }
+
+  // Hash new password
+  user.password = await bcrypt.hash(newPassword, 10);
+  user.passwordChangedAt = Date.now();
+  await user.save();
+
+  return {
+     message: "Password updated successfully",
+    token :generateToken({_id:user._id , email:user.email, role: user.role})
+   };
+}; 
 
 export const userUpdatePassword = async (id, data)=>{
   const user = await User.findByIdAndUpdate(id, data, {new: true});

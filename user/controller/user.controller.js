@@ -1,7 +1,7 @@
 import asyncWrapper from '../../middlewares/asyncWrapper.js'
 import bcrypt from 'bcryptjs'
 import { addUser, changeRole, deleteUserById, getAllUsers, getUserById,
-   userLogin, userUpdate, userUpdatePassword } from '../service/user.service.js'
+   userLogin, userUpdate, checkCurrentPassword, updateUserPassword } from '../service/user.service.js'
 
 const tokenOption = {
   httpOnly: true,     // prevent xss attack
@@ -82,20 +82,25 @@ export const userSignup= asyncWrapper(async(req, res, next) => {
 
   export const changePassword = asyncWrapper (async (req, res, next)=>{
     
-    const userData = {
-      password: await bcrypt.hash(req.body.password,10),
-      passwordChangedAt: Date.now(),
+    const { currentPassword, password, confirmPassword } = req.body;
+    const userId = req.user._id; 
+
+    // Check if current password is correct
+    await checkCurrentPassword(userId, currentPassword);
+  
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Password confirmation failed",
+      });
     }
-     const id = req.user._id;
-    const {user, token} = await userUpdatePassword(id, userData, {new: true});
+      
+    // Update password
+    const response = await updateUserPassword(userId, password);
     
-    res.status(200).cookie("token",token,tokenOption).json({
+    res.status(200).json({
       success:true,
       message: "Password updated successfully",
-      data:{
-          user,
-          token
-      }
   })
   })
 
