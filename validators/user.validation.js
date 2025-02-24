@@ -43,31 +43,43 @@ export const validateUser = Joi.object({
 }).unknown(true); // Allows extra fields not defined in the schema
 
 
-
-
-
 // Password update validation
 export const validateUserPassword = Joi.object({
   currentPassword: Joi.string().required().messages({
-    'string.empty': 'You should enter your current password'
+    "string.empty": "You should enter your current password",
   }),
   password: Joi.string().min(6).required().messages({
-    'string.empty': 'Password is required',
-    'string.min': 'Password must be at least 6 characters long'
+    "string.empty": "Password is required",
+    "string.min": "Password must be at least 6 characters long",
   }),
-  confirmPassword: Joi.string().required().valid(Joi.ref('password')).messages({
-    'string.empty': 'You should enter password confirmation',
-    'any.only': 'Password confirmation failed'
-  })
-}).external(async (value, helpers) => {
-  const user = await User.findById(helpers.state.ancestors[0].params.id);
-  if (!user) throw new appError('User not found');
+  confirmPassword: Joi.string().valid(Joi.ref("password")).required().messages({
+    "string.empty": "You should enter password confirmation",
+    "any.only": "Password confirmation failed",
+  }),
+})
+  .unknown(true) // Allows extra fields
+  .prefs({ allowUnknown: true }) // Ensures unknown fields are not rejected
+  .external(async (value, helpers) => {
+    const userId = helpers.state.ancestors[0].user?._id; // Ensure `user._id` is available
+    
+    if (!userId) {
+      throw new appError("User ID is missing from request", 400);
+    }
 
-  const isCorrect = await bcrypt.compare(value.currentPassword, user.password);
-  if (!isCorrect) throw new appError('Incorrect Password');
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new appError("User not found", 404);
+    }
 
-  return value;
-});
+    const isCorrect = await bcrypt.compare(value.currentPassword, user.password);
+    if (!isCorrect) {
+      throw new appError("Incorrect current password", 400);
+    }
+
+    return value;
+  });
+
+
 
 // Dynamic user update validation
 export const validateUpdateUser = Joi.object({

@@ -23,7 +23,7 @@ const userRouter = express.Router();
 userRouter.post("/signup",userValidator, userSignup);
 userRouter.post("/login", userSignin);
 userRouter.put("/:id", authToken, userUpdateValidator, updateUser);
-userRouter.put("/change-password/:id", authToken, passwordValidator, changePassword)
+userRouter.put("/change-password", authToken, passwordValidator, changePassword)
 
 userRouter.post("/forgot-password", forgotPassword)
 userRouter.post("/check-otp", checkResetCodeController)
@@ -35,5 +35,5 @@ userRouter.get("/", authToken, authorizeRole("admin"), getUsers)
 userRouter.get("/:id", authToken, authorizeRole("admin"), getOneUser)
 userRouter.delete("/:id", authToken, authorizeRole("admin"), deleteOneUser )
 userRouter.put("/changeRole/:id", authToken, authorizeRole("admin"), changeUserRole)
-userRouter.put("")
+
 export default userRouter;

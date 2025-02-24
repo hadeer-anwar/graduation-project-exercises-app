@@ -86,8 +86,8 @@ export const userSignup= asyncWrapper(async(req, res, next) => {
       password: await bcrypt.hash(req.body.password,10),
       passwordChangedAt: Date.now(),
     }
-
-    const {user, token} = await userUpdatePassword(req.params.id, userData, {new: true});
+     const id = req.user._id;
+    const {user, token} = await userUpdatePassword(id, userData, {new: true});
     
     res.status(200).cookie("token",token,tokenOption).json({
       success:true,

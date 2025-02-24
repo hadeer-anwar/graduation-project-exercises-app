@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import appError from "../utils/appError.js";
 import asyncWrapper from "./asyncWrapper.js";
 import User from "../user/model/user.model.js"; 
-
+import mongoose from 'mongoose';
 export const authToken = asyncWrapper(async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -20,9 +20,11 @@ export const authToken = asyncWrapper(async (req, res, next) => {
     }
     throw new appError("Invalid token", 401);
   }
+  
+  const userId = new mongoose.Types.ObjectId(decoded._id);
 
-  // Attach the user ID to the request
-  req.user = { _id: decoded._id, role: decoded.role };
+  // Attach the converted ObjectId to the request
+  req.user = { _id: userId, role: decoded.role };
 
   // Check if the user exists in the database
   const currentUser = await User.findById(req.user._id);

@@ -46,7 +46,7 @@ export const userUpdate = async(id, data)=>{
 }
 
 export const userUpdatePassword = async (id, data)=>{
-  const user = User.findByIdAndUpdate(id, data, {new: true});
+  const user = await User.findByIdAndUpdate(id, data, {new: true});
   if(!user)
     throw new appError("Can't update password");
   return {
