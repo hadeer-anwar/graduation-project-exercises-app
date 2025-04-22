@@ -1,9 +1,8 @@
-const UserChallenge = require('../models/UserChallenge');
-const Challenge = require('../models/Challenge');
-const User = require('../models/User');
-
+import UserChallenge from '../model/userChallenge.model';
+import Challenge from '../model/challenge.model';
+import appError from '../../utils/appError';
 // Start a new challenge for a user
-exports.startChallenge = async (userId, challengeId) => {
+export const startChallenge = async (userId, challengeId) => {
   // Check if user already has this challenge
   const existingUserChallenge = await UserChallenge.findOne({ 
     userId, 
@@ -11,12 +10,12 @@ exports.startChallenge = async (userId, challengeId) => {
   });
   
   if (existingUserChallenge) {
-    throw new Error('User already has this challenge');
+    throw new appError('User already has this challenge');
   }
   
   const challenge = await Challenge.findById(challengeId);
   if (!challenge) {
-    throw new Error('Challenge not found');
+    throw new appError('Challenge not found');
   }
   
   // Initialize completedDays array
@@ -40,14 +39,14 @@ exports.startChallenge = async (userId, challengeId) => {
 };
 
 // Update challenge progress when user completes exercise
-exports.updateChallengeProgress = async (userId, challengeId, repsCompleted) => {
+export const updateChallengeProgress = async (userId, challengeId, repsCompleted) => {
   const userChallenge = await UserChallenge.findOne({ userId, challengeId });
   if (!userChallenge) {
-    throw new Error('User challenge not found');
+    throw new appError('User challenge not found');
   }
   
   if (userChallenge.isCompleted) {
-    throw new Error('Challenge already completed');
+    throw new appError('Challenge already completed');
   }
   
   const challenge = await Challenge.findById(challengeId);
@@ -62,7 +61,7 @@ exports.updateChallengeProgress = async (userId, challengeId, repsCompleted) => 
   });
   
   if (dayIndex === -1) {
-    throw new Error('No challenge scheduled for today');
+    throw new appError('No challenge scheduled for today');
   }
   
   // Check if reps meet the target
@@ -117,7 +116,7 @@ exports.updateChallengeProgress = async (userId, challengeId, repsCompleted) => 
 };
 
 // Get user's active challenges
-exports.getUserChallenges = async (userId) => {
+export const getUserChallenges = async (userId) => {
   return await UserChallenge.find({ userId, isCompleted: false })
     .populate('challengeId');
 };

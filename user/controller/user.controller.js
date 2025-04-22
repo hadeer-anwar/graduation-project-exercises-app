@@ -1,7 +1,17 @@
 import asyncWrapper from '../../middlewares/asyncWrapper.js'
-import bcrypt from 'bcryptjs'
-import { addUser, changeRole, deleteUserById, getAllUsers, getUserById,
-   userLogin, userUpdate, checkCurrentPassword, updateUserPassword } from '../service/user.service.js'
+import bcrypt from 'bcryptjs' 
+
+import { 
+  addUser, 
+  changeRole, 
+  deleteUserById, 
+  getAllUsers, 
+  getUserById,
+  userLogin, 
+  userUpdate, 
+  checkCurrentPassword, 
+  updateUserPassword 
+} from '../service/user.service.js'
 
 const tokenOption = {
   httpOnly: true,     // prevent xss attack
@@ -10,176 +20,160 @@ const tokenOption = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // Cookie valid for 7 days
 }
 
-export const userSignup= asyncWrapper(async(req, res, next) => {
-    let userData= {
-      name:req.body.name,
-      email:req.body.email,
-      password:req.body.password,
-      passwordChangedAt: req.body.passwordChangedAt,
-      googleId:req.body.googleId,
-      profilePic: req.body.profilePic,
-      age: req.body.age,
-      height:req.body.height,
-      weight: req.body.weight,
-      fitnessGoal: req.body.fitnessGoal,
-      activityLevel: req.body.activityLevel,
-      achievements: req.body.achievements,
-      workoutHistory: req.body.workoutHistory,
-      role: req.body.role
-    }
-    const {user,token} = await addUser(userData);
-
-    res.status(201).cookie("token",token,tokenOption).json({
-        success:true,
-        message:"User Registered successfully ",
-        data:{
-            user,
-            token
-        }
-    })
-  })
-
-
-  export const userSignin = asyncWrapper(async (req, res , next) => {
-    const {email, password} = req.body;
-  const {user,token} = await userLogin(email, password);
+export const userSignup = asyncWrapper(async(req, res, next) => {
+  let userData = {
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    passwordChangedAt: req.body.passwordChangedAt,
+    googleId: req.body.googleId,
+    profilePic: req.body.profilePic,
+    age: req.body.age,
+    height: req.body.height,
+    weight: req.body.weight,
+    fitnessGoal: req.body.fitnessGoal,
+    activityLevel: req.body.activityLevel,
+    achievements: req.body.achievements,
+    workoutHistory: req.body.workoutHistory,
+    role: req.body.role
+  }
   
-    res.status(200).cookie("token",token,tokenOption).json({
-        success:true,
-        message:"User Logged In",
-        data:{
-            user,
-            token
-        }
-    })
+  const { user, token } = await addUser(userData);
+
+  res.status(201).cookie("token", token, tokenOption).json({
+    success: true,
+    message: "User Registered successfully",
+    data: { user, token }
+  })
+})
+
+export const userSignin = asyncWrapper(async (req, res, next) => {
+  const { email, password } = req.body;
+  const { user, token } = await userLogin(email, password);
+  
+  res.status(200).cookie("token", token, tokenOption).json({
+    success: true,
+    message: "User Logged In",
+    data: { user, token }
+  })
+});
+
+export const updateUser = asyncWrapper(async (req, res, next) => {
+  const { id } = req.params;
+  let user = {
+    name: req.body.name,
+    email: req.body.email,
+    profilePic: req.body.profilePic,
+    age: req.body.age,
+    height: req.body.height,
+    weight: req.body.weight,
+    fitnessGoal: req.body.fitnessGoal,
+    activityLevel: req.body.activityLevel,
+    points: req.body.points,
+    achievements: req.body.achievements,
+    workoutHistory: req.body.workoutHistory,
+  }
+  
+  user = await userUpdate(id, user, { new: true });
+  res.status(200).json({
+    data: user,
+    success: true,
+    error: false,
+    message: 'User updated successfully'
   });
+})
 
+export const changePassword = asyncWrapper(async (req, res, next) => {
+  const { currentPassword, password, confirmPassword } = req.body;
+  const userId = req.user._id; 
 
+  // Check if current password is correct
+  await checkCurrentPassword(userId, currentPassword);
 
-  export const updateUser = asyncWrapper (async (req,res, next)=>{
-     const {id} = req.params;
-     let user = {
-      name: req.body.name,
-      email: req.body.email,
-      profilePic: req.body.profilePic,
-      age: req.body.age,
-      height: req.body.height,
-      weight: req.body.weight,
-      fitnessGoal: req.body.fitnessGoal,
-      activityLevel: req.body.activityLevel,
-      points: req.body.points,
-      achievements: req.body.achievements,
-      workoutHistory: req.body.workoutHistory,
-     }
-     user = await userUpdate(id, user, {new: true});
-     res.status(200).json({
-      data: user,
-      success: true,
-      error:false,
-      message: 'User updated successfully'
+  if (password !== confirmPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Password confirmation failed",
     });
-  })
-
-  export const changePassword = asyncWrapper (async (req, res, next)=>{
+  }
     
-    const { currentPassword, password, confirmPassword } = req.body;
-    const userId = req.user._id; 
-
-    // Check if current password is correct
-    await checkCurrentPassword(userId, currentPassword);
+  // Update password
+  const response = await updateUserPassword(userId, password);
   
-    if (password !== confirmPassword) {
-      return res.status(400).json({
-        success: false,
-        message: "Password confirmation failed",
-      });
-    }
-      
-    // Update password
-    const response = await updateUserPassword(userId, password);
-    
-    res.status(200).json({
-      success:true,
-      message: "Password updated successfully",
+  res.status(200).json({
+    success: true,
+    message: "Password updated successfully",
   })
-  })
+})
 
-  // get all users
-export const getUsers = asyncWrapper (async(req,res,next)=>{
+// Get all users
+export const getUsers = asyncWrapper(async(req, res, next) => {
   const usersList = await getAllUsers();
   res.status(200).json({
     data: usersList,
     success: true,
-    error:false,
+    error: false,
     message: 'All Users'
   });
 })
 
-// get user by id 
-export const getOneUser = asyncWrapper(async (req, res, next)=>{
+// Get user by id 
+export const getOneUser = asyncWrapper(async (req, res, next) => {
   const user = await getUserById(req.params.id)
-
   res.status(200).json({
     data: user,
     success: true,
-    error:false,
+    error: false,
     message: ''
   });
 })
 
-// delete user
-export const deleteOneUser = asyncWrapper( async (req, res, next )=>{
+// Delete user
+export const deleteOneUser = asyncWrapper(async (req, res, next) => {
   const user = await deleteUserById(req.params.id)
-
   res.status(200).json({
     data: user,
     success: true,
-    error:false,
+    error: false,
     message: 'User Deleted successfully'
   });
 })
 
-export const changeUserRole = asyncWrapper (async (req, res, next)=>{
-
-  const user = await  changeRole(req.params.id, {role: req.body.role});
+export const changeUserRole = asyncWrapper(async (req, res, next) => {
+  const user = await changeRole(req.params.id, { role: req.body.role });
   res.status(200).json({
     data: user,
     success: true,
-    error:false,
+    error: false,
     message: 'Role changed successfully'
   });
 })
 
-export const getMyProfile = asyncWrapper(async (req, res, next)=>{
-  console.log("from my profile")
-  const {_id} = req.user;
-  console.log("user id ", _id)
+export const getMyProfile = asyncWrapper(async (req, res, next) => {
+  const { _id } = req.user;
   const user = await getUserById(_id);
 
   res.status(200).json({
     data: user,
     success: true,
-    error:false,
+    error: false,
     message: ''
   });
-
 })
 
-
-
-// export const logoutUser = asyncWrapper (async(req, res, next)=>{
+// Uncommented and fixed logout function
+export const logoutUser = asyncWrapper(async(req, res, next) => {
+  res.cookie("token", "", {
+    httpOnly: true, // Prevent XSS
+    secure: process.env.NODE_ENV === "production", // Secure in production
+    sameSite: "Strict", // Prevent CSRF
+    expires: new Date(0), // Expire immediately
+  });
   
-//     res.cookie("token", "", {
-//       httpOnly: true, // Prevent XSS
-//       secure: process.env.NODE_ENV === "production", // Secure in production
-//       sameSite: "Strict", // Prevent CSRF
-//       expires: new Date(0), // Expire immediately
-//     });
-//     res.status(200).json({
-//       data:"",
-//       success: true,
-//       error:false,
-//       message: 'Logged out successfully'
-//     });
-  
-// })
+  res.status(200).json({
+    data: "",
+    success: true,
+    error: false,
+    message: 'Logged out successfully'
+  });
+})

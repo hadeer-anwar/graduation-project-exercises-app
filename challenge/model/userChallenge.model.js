@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+
 
 const userChallengeSchema = new mongoose.Schema({
   userId: {
@@ -38,4 +39,5 @@ const userChallengeSchema = new mongoose.Schema({
 // Index for faster queries
 userChallengeSchema.index({ userId: 1, challengeId: 1 }, { unique: true });
 
-module.exports = mongoose.model('UserChallenge', userChallengeSchema);
+const UserChallenge = mongoose.model('UserChallenge', userChallengeSchema);
+export default UserChallenge;

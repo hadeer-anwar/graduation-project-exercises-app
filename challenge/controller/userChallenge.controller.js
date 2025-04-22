@@ -1,15 +1,11 @@
-const UserChallenge = require('../models/UserChallenge');
-const Challenge = require('../models/Challenge');
-const User = require('../models/User');
+import UserChallenge from '../model/userChallenge.model.js';
+import Challenge from '../model/challenge.model.js';
+import asyncWrapper from '../../middlewares/asyncWrapper.js';
 const { addPoints } = require('./userController');
 
-/**
- * @desc    Get all user challenges
- * @route   GET /api/user-challenges
- * @access  Private
- */
-exports.getUserChallenges = async (req, res) => {
-  try {
+
+export const getUserChallenges = asyncWrapper( async (req, res) => {
+  
     const userId = req.user._id;
     
     const userChallenges = await UserChallenge.find({ userId })
@@ -24,21 +20,12 @@ exports.getUserChallenges = async (req, res) => {
       count: userChallenges.length,
       data: userChallenges
     });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: 'Server Error'
-    });
-  }
-};
+  
+});
 
-/**
- * @desc    Get single user challenge
- * @route   GET /api/user-challenges/:id
- * @access  Private
- */
-exports.getUserChallenge = async (req, res) => {
-  try {
+
+export const getUserChallenge = asyncWrapper( async (req, res) => {
+  
     const userChallenge = await UserChallenge.findOne({
       _id: req.params.id,
       userId: req.user._id
@@ -54,22 +41,12 @@ exports.getUserChallenge = async (req, res) => {
     res.status(200).json({
       success: true,
       data: userChallenge
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: 'Server Error'
-    });
-  }
-};
+    }); 
+});
 
-/**
- * @desc    Start a new challenge
- * @route   POST /api/user-challenges
- * @access  Private
- */
-exports.startChallenge = async (req, res) => {
-  try {
+
+export const startChallenge = asyncWrapper( async (req, res) => {
+  
     const { challengeId } = req.body;
     const userId = req.user._id;
 
@@ -114,28 +91,11 @@ exports.startChallenge = async (req, res) => {
       success: true,
       data: userChallenge
     });
-  } catch (err) {
-    if (err.name === 'ValidationError') {
-      const messages = Object.values(err.errors).map(val => val.message);
-      return res.status(400).json({
-        success: false,
-        error: messages
-      });
-    } else {
-      return res.status(500).json({
-        success: false,
-        error: 'Server Error'
-      });
-    }
-  }
-};
+  
+});
 
-/**
- * @desc    Update challenge progress
- * @route   PUT /api/user-challenges/:id/progress
- * @access  Private
- */
-exports.updateChallengeProgress = async (req, res) => {
+
+export const updateChallengeProgress = asyncWrapper( async (req, res) => {
   try {
     const { repsCompleted } = req.body;
     const userId = req.user._id;
@@ -240,15 +200,11 @@ exports.updateChallengeProgress = async (req, res) => {
       error: 'Server Error'
     });
   }
-};
+});
 
-/**
- * @desc    Delete user challenge
- * @route   DELETE /api/user-challenges/:id
- * @access  Private
- */
-exports.deleteUserChallenge = async (req, res) => {
-  try {
+
+export const deleteUserChallenge = asyncWrapper( async (req, res) => {
+
     const userChallenge = await UserChallenge.findOne({
       _id: req.params.id,
       userId: req.user._id
@@ -267,10 +223,5 @@ exports.deleteUserChallenge = async (req, res) => {
       success: true,
       data: {}
     });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      error: 'Server Error'
-    });
-  }
-};
+   
+});

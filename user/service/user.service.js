@@ -1,7 +1,7 @@
 import User from "../model/user.model.js";
 import appError from '../../utils/appError.js'
 import generateToken from "../../utils/generateToken.js";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 // add user
 
