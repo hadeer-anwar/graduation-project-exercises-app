@@ -14,6 +14,7 @@ import './passport.js'
 import workoutRouter from './routes/workout.routes.js';
 import challengeRouter from './routes/challenge.routes.js';
 import exerciseRouter from './routes/exercise.routes.js';
+import postRouter from './routes/post.routes.js'
 
 const app = express();
 
@@ -53,7 +54,7 @@ app.use('/api/v1/auth', router);
 app.use('/api/v1/workout',workoutRouter);
 app.use('/api/v1/challenge',challengeRouter);
 app.use('/api/v1/exercise', exerciseRouter);
-
+app.use('/api/v1/posts', postRouter)
 // Error handling
 app.use(errorHandler);
 
