@@ -8,9 +8,10 @@ import {
 } from '../community/controller/post.controller.js';
 import { uploadFiles } from "../cloudinary/cloudinaryConfig.js";
 import { postValidator } from '../middlewares/postValidator.js';
+import { commentValidator } from '../middlewares/commentValidator.js';
 import {likePost} from '../community/controller/like.controller.js';
 import {sharePost} from '../community/controller/share.controller.js'
-import { addComment, replyToComment } from '../community/controller/comment.controller.js';
+import { addComment, deleteComment, editComment, replyToComment } from '../community/controller/comment.controller.js';
 import { authToken } from "../middlewares/authToken.js";
 
 
@@ -27,12 +28,14 @@ communityRouter.get('/getPostById/:id',getPost)
   
 communityRouter.delete( '/deletePostById/:id',authToken, deletePost);
 
-communityRouter.post('/like/:id', authToken, likePost);
-communityRouter.post('/share/:id', authToken, sharePost);
+communityRouter.post('/like/:postId', authToken, likePost);
+communityRouter.post('/share/:postId', authToken, sharePost);
 
-communityRouter.post('/addComment/:id', authToken, addComment);
-communityRouter.post('/comments/reply/:commentId', authToken, replyToComment);
-communityRouter.get('/details/:id', getPostDetails);
+communityRouter.post('/comments/addComment/:postId', authToken,commentValidator ,addComment);
+communityRouter.post('/comments/replyToComment/:commentId', authToken, replyToComment);
+communityRouter.patch('/comments/:commentId', authToken,commentValidator ,editComment);
+communityRouter.delete('/comments/:commentId', authToken, deleteComment);
+communityRouter.get('/details/:postId', getPostDetails);
 
 
 export default communityRouter;

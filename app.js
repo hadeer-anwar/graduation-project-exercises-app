@@ -54,7 +54,7 @@ app.use('/api/v1/auth', router);
 app.use('/api/v1/workout',workoutRouter);
 app.use('/api/v1/challenge',challengeRouter);
 app.use('/api/v1/exercise', exerciseRouter);
-app.use('/api/v1/posts', postRouter)
+app.use('/api/v1/community', postRouter)
 // Error handling
 app.use(errorHandler);
 
