@@ -11,16 +11,37 @@ const postSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  image: String, // optional image
+  videoUrls: [{
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(v);
+      },
+      message: props => `${props.value} is not a valid URL!`
+    }
+  }],
+  imageUrls: [{
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(v);
+      },
+      message: props => `${props.value} is not a valid URL!`
+    }
+  }],
   likes: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'User'
   }],
   comments: [{
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    comment: String,
-    createdAt: { type: Date, default: Date.now }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
   }],
+  shares: {
+    type: Number,
+    default: 0
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

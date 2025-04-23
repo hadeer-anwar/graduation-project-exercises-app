@@ -14,7 +14,7 @@ import './passport.js'
 import workoutRouter from './routes/workout.routes.js';
 import challengeRouter from './routes/challenge.routes.js';
 import exerciseRouter from './routes/exercise.routes.js';
-import postRouter from './routes/post.routes.js'
+import postRouter from './routes/community.routes.js'
 
 const app = express();
 
