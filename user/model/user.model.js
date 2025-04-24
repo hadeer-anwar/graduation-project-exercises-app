@@ -49,7 +49,18 @@ const userSchema = new mongoose.Schema(
     workoutHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "Workout" }],
 
     role: { type: String, enum: ["user", "admin"], default: "user" },
+     // Add these new fields for sharing functionality
+     sharedPosts: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post"
+    }],
+    
+    posts: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post"
+    }],
   },
+  
   { timestamps: true } 
 );
 
