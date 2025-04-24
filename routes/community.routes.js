@@ -12,8 +12,8 @@ import {
 import { uploadFiles } from "../cloudinary/cloudinaryConfig.js";
 import { postValidator } from '../middlewares/postValidator.js';
 import { commentValidator } from '../middlewares/commentValidator.js';
-import {likePost} from '../community/controller/like.controller.js';
-import {sharePost} from '../community/controller/share.controller.js'
+import {likePost, unlikePost} from '../community/controller/like.controller.js';
+import {sharePost, undoSharePost} from '../community/controller/share.controller.js'
 import { addComment, deleteComment, editComment, getPostComments, replyToComment } from '../community/controller/comment.controller.js';
 import { authToken } from "../middlewares/authToken.js";
 
@@ -32,7 +32,10 @@ communityRouter.get('/posts/getPostById/:id',getPost)
 communityRouter.delete( '/posts/deletePostById/:id',authToken, deletePost);
 
 communityRouter.post('/like/:postId', authToken, likePost);
+communityRouter.post('/unlike/:postId', authToken, unlikePost);
+
 communityRouter.post('/share/:postId', authToken, sharePost);
+communityRouter.delete('/unshare/:postId', authToken, undoSharePost);
 
 communityRouter.post('/comments/addComment/:postId', authToken,commentValidator ,addComment);
 communityRouter.post('/comments/replyToComment/:commentId', authToken, replyToComment);
