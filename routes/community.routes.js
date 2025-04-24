@@ -35,7 +35,7 @@ communityRouter.post('/like/:postId', authToken, likePost);
 communityRouter.post('/unlike/:postId', authToken, unlikePost);
 
 communityRouter.post('/share/:postId', authToken, sharePost);
-communityRouter.delete('/unshare/:postId', authToken, undoSharePost);
+communityRouter.delete('/undoshare/:postId', authToken, undoSharePost);
 
 communityRouter.post('/comments/addComment/:postId', authToken,commentValidator ,addComment);
 communityRouter.post('/comments/replyToComment/:commentId', authToken, replyToComment);
