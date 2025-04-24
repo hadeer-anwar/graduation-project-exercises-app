@@ -6,7 +6,7 @@ export const createPost = asyncWrapper(async (req, res) => {
    console.log(req.body,"watch")
     
     const { content } = req.body;
-    const userId = req.body.user;
+    const userId = req.user._id.toString();
     
     console.log("again", userId)
     // Process uploaded files

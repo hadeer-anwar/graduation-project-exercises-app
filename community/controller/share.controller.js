@@ -3,7 +3,7 @@ import * as shareService from '../service/share.service.js';
 
 
 export const sharePost = asyncWrapper(async (req, res) => {
-  const post = await shareService.sharePost(req.params.id);
+  const post = await shareService.sharePost(req.params.postId);
   res.status(200).json({
     success: true,
     data: post

@@ -1,6 +1,17 @@
 import asyncWrapper from '../../middlewares/asyncWrapper.js';
 import * as commentService from '../service/comment.service.js';
 
+
+export const getPostComments = asyncWrapper(async (req, res) => {
+  const comments = await commentService.getCommentsByPostId(req.params.id);
+  
+  res.status(200).json({
+    success: true,
+    count: comments.length,
+    data: comments
+  });
+});
+
 export const addComment = asyncWrapper(async (req, res) => {
   if (!req.user || !req.user._id) {
     return res.status(401).json({ status: false, message: "Unauthorized" });

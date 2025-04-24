@@ -1,6 +1,47 @@
 import appError from "../../utils/appError.js";
 import Post from "../model/post.model.js";
 import Comment from '../model/comment.model.js'
+
+
+export const getCommentsByPostId = async (postId) => {
+  const post = await Post.findById(postId)
+    .populate({
+      path: 'comments',
+      populate: [
+        {
+          path: 'user',
+          select: 'name avatar' // Only include name and avatar
+        },
+        {
+          path: 'replies',
+          populate: [
+            {
+              path: 'user',
+              select: 'name avatar'
+            },
+            {
+              path: 'replies', // For nested replies
+              populate: {
+                path: 'user',
+                select: 'name avatar'
+              }
+            }
+          ]
+        }
+      ]
+    });
+
+  if (!post) {
+    throw new appError('Post not found', 404);
+  }
+
+  return post.comments;
+};
+
+
+
+
+
 export const addComment = async (postId, userId, content) => {
   const post = await Post.findById(postId);
   
