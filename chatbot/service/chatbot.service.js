@@ -21,7 +21,7 @@ export const getFitnessBotReply = async (userMessage) => {
     return reply || "Sorry, I couldn’t generate a helpful response.";
   } catch (error) {
     console.error("Gemini SDK Error:", error.message || error);
-    throw appError("Gemini service failed.");
+    throw new appError("Gemini service failed.");
   }
 };
 
@@ -32,7 +32,7 @@ export const getUserChats = async (userId) => {
   const chat = await FitnessChat.findOne({ userId });
 
   if (!chat) {
-    throw appError("No chats found for this user.");
+    throw new appError("No chats found for this user.");
   }
 
   return chat;
