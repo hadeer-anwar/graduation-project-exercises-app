@@ -10,7 +10,8 @@ import {
   userLogin, 
   userUpdate, 
   checkCurrentPassword, 
-  updateUserPassword 
+  updateUserPassword ,
+  adminLogin,
 } from '../service/user.service.js'
 
 const tokenOption = {
@@ -56,6 +57,21 @@ export const userSignin = asyncWrapper(async (req, res, next) => {
     message: "User Logged In",
     data: { user, token }
   })
+});
+
+export const adminSignin = asyncWrapper(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  const { user, token } = await adminLogin(email, password);
+
+  res
+    .status(200)
+    .cookie("token", token, tokenOption)
+    .json({
+      success: true,
+      message: "Admin Logged In",
+      data: { user, token },
+    });
 });
 
 export const updateUser = asyncWrapper(async (req, res, next) => {

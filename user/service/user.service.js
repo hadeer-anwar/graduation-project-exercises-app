@@ -35,6 +35,34 @@ export const userLogin = async(email, password)=>{
   }
 }
 
+export const adminLogin = async (email, password) => {
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user) {
+    throw new appError("User Not Found", 404);
+  }
+
+  const isMatch = await user.matchPassword(password);
+
+  if (!isMatch) {
+    throw new appError("Invalid Credentials", 401);
+  }
+
+  if (user.role !== "admin") {
+    throw new appError("Access denied. Not an admin.", 403);
+  }
+
+  return {
+    user,
+    token: generateToken({
+      _id: user._id,
+      email: user.email,
+      role: user.role
+    }),
+  };
+};
+
+
 // update user info 
 
 export const userUpdate = async(id, data)=>{

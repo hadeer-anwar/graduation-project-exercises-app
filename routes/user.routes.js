@@ -7,7 +7,10 @@ import { changePassword,
          getUsers, 
          updateUser, 
          userSignin, 
-         userSignup } from "../user/controller/user.controller.js";
+         userSignup,
+         adminSignin,
+         }
+         from "../user/controller/user.controller.js";
 
 import { authToken } from "../middlewares/authToken.js";
 
@@ -22,6 +25,7 @@ const userRouter = express.Router();
 
 userRouter.post("/signup",userValidator, userSignup);
 userRouter.post("/login", userSignin);
+userRouter.post("/admin-login", adminSignin);
 userRouter.put("/change-password", authToken, passwordValidator, changePassword)
 userRouter.post("/forgot-password", forgotPassword)
 userRouter.post("/check-otp", checkResetCodeController)
