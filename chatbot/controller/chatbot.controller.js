@@ -9,17 +9,26 @@ export const askFitnessBot = asyncWrapper(async (req, res, next) => {
   const botReply = await getFitnessBotReply(message);
 
   // Save to DB
-  const newChat = await FitnessChat.create({
-    userId,
-    messages: [
+  let chat = await FitnessChat.findOne({ userId });
+
+  if (!chat) {
+    chat = await FitnessChat.create({
+      userId,
+      messages: [
+        { sender: "user", text: message },
+        { sender: "bot", text: botReply },
+      ],
+    });
+  } else {
+    chat.messages.push(
       { sender: "user", text: message },
-      { sender: "bot", text: botReply },
-    ],
-  });
+      { sender: "bot", text: botReply }
+    );
+    await chat.save();
+  }
 
   res.status(200).json({
-    reply: botReply,
-    chat: newChat,
+    reply: botReply
   });
 });
 
