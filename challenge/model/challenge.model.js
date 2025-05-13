@@ -15,7 +15,7 @@ const challengeSchema = new mongoose.Schema({
   // Shared metadata
   content: { 
     type: String, 
-    required: true 
+    
   },
 
 }, { 

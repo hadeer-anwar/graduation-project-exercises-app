@@ -1,7 +1,9 @@
 import express from 'express'
-import { authToken } from '../middlewares/authToken';
-import {joinSession, createSession} from '../challenge/controller/session.controller'
+import { authToken } from "../middlewares/authToken.js";
+import {joinSession, createSession} from '../challenge/controller/session.controller.js'
 const sessionRouter = express.Router();
 
-sessionRouter.post('/',authToken,createSession)
-sessionRouter.post('/:sessionId',authToken,joinSession)
+sessionRouter.post('/createSession', authToken, createSession)
+sessionRouter.post('/:sessionId', authToken, joinSession)
+
+export default sessionRouter;

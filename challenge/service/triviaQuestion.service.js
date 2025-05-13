@@ -2,14 +2,32 @@
 import TriviaQuestion from "../model/triviaQuestion.model.js";
 import Challenge from '../../challenge/model/challenge.model.js'
 import appError from '../../utils/appError.js'
+import mongoose from "mongoose";
 
-export const createTriviaQuestion =  async (data) => {
+const TriviaChallenge = mongoose.model("trivia");
+
+export const createTriviaQuestion = async (data) => {
   const question = await TriviaQuestion.create(data);
-  if(!question)
-    throw new appError("can't create question")
+  if (!question) {
+    throw new appError("Can't create question");
+  }
 
-  return question;
+  // Create associated trivia challenge
+  const challenge = await TriviaChallenge.create({
+    type: "trivia",
+    questionId: question._id,
+    points: question.points, // Use same points as question
+    content: question.question, // Optional: store question text for easier access
+    timeLimit: data.timeLimit || 30, // Optional: override or use default
+  });
+
+  if (!challenge) {
+    throw new appError("Failed to create associated challenge");
+  }
+
+  return { question, challenge };
 };
+
 
 export const getTriviaQuestions = async (filter = {}) => {
   const questions = await TriviaQuestion.find(filter);

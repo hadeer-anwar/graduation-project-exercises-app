@@ -17,6 +17,7 @@ import postRouter from './routes/community.routes.js'
 import chatbotRouter from './routes/chatbot.routes.js';
 import triviaQuestionRouter from './routes/triviaQuestion.route.js';
 import challengeRouter from './routes/challenge.route.js';
+import sessionRouter from './routes/session.route.js';
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use('/api/v1/community', postRouter)
 app.use('/api/v1/chatbot', chatbotRouter);
 app.use('/api/v1/trivia-questions', triviaQuestionRouter)
 app.use('/api/v1/challenge', challengeRouter)
+app.use('/api/v1/challengeSession/', sessionRouter)
 // Error handling
 app.use(errorHandler);
 

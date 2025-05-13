@@ -1,9 +1,12 @@
-import asyncWrapper from "../../middlewares/asyncWrapper";
-import * as SessionService from "../service/Session.service";
+import asyncWrapper from "../../middlewares/asyncWrapper.js";
+import * as SessionService from "../service/session.service.js";
 
 export const createSession = asyncWrapper(async (req, res) => {
-  const session = await SessionService.createSession(req.user._id);
-  res.status(201).json({ sessionId: session.sessionId });
+  const session = await SessionService.createSession(req.user._id, req.body.challengeCount);
+  res.status(201).json({
+    success: true,
+    data: session
+  });
 });
 
 export const joinSession = asyncWrapper(async (req, res) => {
