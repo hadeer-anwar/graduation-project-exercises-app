@@ -1,24 +1,64 @@
+
 import mongoose from "mongoose";
 
-
-const ChallengeSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    description: { type: String },
-    requiredDays: { type: Number, required: true }, 
-    dailyTarget: { type: Number, required: true }, 
-    pointsPerDay: { type: Number, default: 10 }, 
-    totalPoints: { type: Number }, 
-    exercise: { type: mongoose.Schema.Types.ObjectId, ref: 'Exercise' },
+// Base Challenge Schema
+const challengeSchema = new mongoose.Schema({
+  type: { 
+    type: String, 
+    enum: ["exercise", "trivia"], 
+    required: true 
   },
-  { timestamps: true }
-);
+  points: { 
+    type: Number, 
+    default: 10 
+  },
+  // Shared metadata
+  content: { 
+    type: String, 
+    required: true 
+  },
 
-ChallengeSchema.pre("save", function (next) {
-  this.totalPoints = this.requiredDays * this.pointsPerDay;
-  next();
+}, { 
+  timestamps: true,
+  discriminatorKey: "type" // Critical for inheritance
 });
 
-const Challenge = mongoose.model("Challenge", ChallengeSchema);
-export default Challenge;
+// Base Model
+const Challenge = mongoose.model("Challenge", challengeSchema);
 
+// Exercise Challenge Discriminator
+const ExerciseChallenge = Challenge.discriminator("exercise", 
+  new mongoose.Schema({
+    exerciseId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "Exercise",
+      required: true 
+    },
+    calcMethod: {
+      type: String, 
+      enum: ["reps", "time"],
+      required: true 
+    },
+    target: { 
+      type: Number 
+    },
+
+  })
+);
+
+// Trivia Challenge Discriminator
+const TriviaChallenge = Challenge.discriminator("trivia", 
+  new mongoose.Schema({
+    questionId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "TriviaQuestion",
+      required: true 
+    },
+    timeLimit: { 
+      type: Number, 
+      default: 30 // Seconds to answer
+    }
+  })
+);
+
+export default Challenge;

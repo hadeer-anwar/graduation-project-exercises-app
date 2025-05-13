@@ -11,6 +11,6 @@ mongoose.connect(db).then(async()=>{
 }).catch(err => {
     console.error("Failed to connect to database", err);
 });
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 3000,'0.0.0.0', () => {
     console.log("Server is running on port 3000");
 })

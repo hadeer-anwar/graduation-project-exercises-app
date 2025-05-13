@@ -1,71 +1,51 @@
-import * as challengeService from "../service/challenge.service.js";
 import asyncWrapper from "../../middlewares/asyncWrapper.js";
+import * as challengeService from "../service/challenge.service.js";
 
-// ✅ Create a new challenge
-export const createChallenge = asyncWrapper(async (req, res, next) => {
-  const { name, 
-          description, 
-          requiredDays,
-          dailyTarget, 
-          exercise, 
-          pointsPerDay, 
-          } = req.body;
-
-  const challenge = await challengeService.createChallenge({
-    name,
-    description,
-    requiredDays,
-    dailyTarget,
-    exercise,
-    pointsPerDay,
-    totalPoints,
-  });
-
+// Create challenge
+export const createChallenge = asyncWrapper(async (req, res) => {
+  const challenge = await challengeService.createChallenge(req.body);
   res.status(201).json({
-    success: true,
-    message: "Challenge created successfully",
+    status: "success",
     data: challenge,
   });
 });
 
-//  Get all challenges
-export const getAllChallenges = asyncWrapper(async (req, res, next) => {
+// Update challenge
+export const updateChallenge = asyncWrapper(async (req, res) => {
+  const challenge = await challengeService.updateChallenge(
+    req.params.id,
+    req.body
+  );
+  res.status(200).json({
+    status: "success",
+    data: challenge,
+  });
+});
+
+// Delete challenge
+export const deleteChallenge = asyncWrapper(async (req, res) => {
+  await challengeService.deleteChallenge(req.params.id);
+  res.status(200).json({
+    status: "success",
+    message: "Challenge deleted successfully"
+  });
+});
+
+// Get all challenges
+export const getAllChallenges = asyncWrapper(async (req, res) => {
   const challenges = await challengeService.getAllChallenges();
   res.status(200).json({
-    success: true,
-    message: "All challenges",
+    status: "success",
+    results: challenges.length,
     data: challenges,
   });
 });
 
-//  Get challenge by ID
-export const getChallengeById = asyncWrapper(async (req, res, next) => {
-  const { challengeId } = req.params;
-  const challenge = await challengeService.getChallengeById(challengeId);
+// Get single challenge
+export const getChallenge = asyncWrapper(async (req, res) => {
+  const challenge = await challengeService.getChallengeById(req.params.id);
   res.status(200).json({
-    success: true,
-    message: "Challenge details",
+    status: "success",
     data: challenge,
-  });
-});
-
-//  Update a challenge
-export const updateChallenge = asyncWrapper(async (req, res, next) => {
-  const { challengeId } = req.params;
-  const updatedChallenge = await challengeService.updateChallenge(challengeId, req.body);
-  res.status(200).json({
-    success: true,
-    message: "Challenge updated successfully",
-    data: updatedChallenge,
-  });
-});
-
-//  Delete a challenge
-export const deleteChallenge = asyncWrapper(async (req, res, next) => {
-  const { challengeId } = req.params;
-  await challengeService.deleteChallenge(challengeId);
-  res.status(200).json({
-    success: true,
-    message: "Challenge deleted successfully",
   });
 });
