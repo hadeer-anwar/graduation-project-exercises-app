@@ -4,7 +4,7 @@ import appError from '../../utils/appError.js';
 
 export const createPost = async (userId, postData) => {
     const { content, videoUrls = [], imageUrls = [] } = postData;
-    
+    console.log("df",postData)
     // Validate URLs if needed
     const validateUrl = (url) => {
         try {

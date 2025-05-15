@@ -3,11 +3,12 @@ import * as postService from '../service/post.service.js';
 
 export const createPost = asyncWrapper(async (req, res) => {
     const { content } = req.body;
+    console.log("req",req.files)
     const userId = req.user._id.toString();
     
     // Process uploaded files
-    const imageUrls = req.files['image']?.map(file => file.path) || [];
-    const videoUrls = req.files['video']?.map(file => file.path) || [];
+    const imageUrls = req.files['imageUrls']?.map(file => file.path) || [];
+    const videoUrls = req.files['videoUrls']?.map(file => file.path) || [];
     
     // Combine with any URLs provided in the request
     const combinedImageUrls = [...imageUrls, ...(req.body.imageUrls || [])];
@@ -18,6 +19,7 @@ export const createPost = asyncWrapper(async (req, res) => {
         imageUrls: combinedImageUrls,
         videoUrls: combinedVideoUrls
     });
+    console.log("poost",post)
 
     res.status(201).json({
         success: true,
