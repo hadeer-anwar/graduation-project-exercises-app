@@ -18,6 +18,8 @@ import chatbotRouter from './routes/chatbot.routes.js';
 import triviaQuestionRouter from './routes/triviaQuestion.route.js';
 import challengeRouter from './routes/challenge.route.js';
 import sessionRouter from './routes/session.route.js';
+import userExerciseProgressRouter from './routes/userExerciseProgress.route.js';
+import userChallengeProgressRouter from './routes/userChallengeProgress.route.js';
 
 const app = express();
 
@@ -61,6 +63,8 @@ app.use('/api/v1/chatbot', chatbotRouter);
 app.use('/api/v1/trivia-questions', triviaQuestionRouter)
 app.use('/api/v1/challenge', challengeRouter)
 app.use('/api/v1/challengeSession/', sessionRouter)
+app.use('/api/v1/progress', userExerciseProgressRouter)
+app.use('/api/v1/challenge-progress', userChallengeProgressRouter)
 // Error handling
 app.use(errorHandler);
 

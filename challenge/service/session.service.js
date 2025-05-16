@@ -34,14 +34,61 @@ export const createSession = async (hostId, challengeCount = 2) => {
   return session;
 };
 
+export const startSession = async (sessionId, userId) => {
+  const session = await Session.findOne({sessionId});
+  if (!session) {
+    throw new appError("Session not found", 404);
+  }
+// console.log("host", session.host)
+// console.log("user", userId)
+ if (session.host.toString() !== userId.toString()) {
+  throw new appError("Only the host can start the session", 403);
+}
+
+  if (session.status === 'active') {
+    throw new appError("Session is already active", 400);
+  }
+
+  session.status = "active";
+  await session.save();
+
+  return session;
+};
+
+export const endSession = async (sessionId,userId ) => {
+    const session = await Session.findOne({sessionId});
+  if (!session) {
+    throw new appError("Session not found", 404);
+  }
+ if (session.host.toString() !== userId.toString()) {
+  throw new appError("Only the host can start the session", 403);
+}
+
+  if (session.status === 'completed') {
+    throw new appError("Session is already ended", 400);
+  }
+
+  session.status = "completed";
+  await session.save();
+
+  return session;
+}
+
 // User joins a session
 export const joinSession = async (sessionId, userId) => {
   const session = await Session.findOne({ sessionId });
-  if (!session) throw appError("Session not found", 404);
-  if (session.status !== "waiting") throw appError("Session already started", 400);
+  if (!session) throw new appError("Session not found", 404);
+  if (session.status === "completed") throw new appError("Session ended", 400);
 
   session.participants.push(userId);
   await session.save();
   return session;
+};
+
+export const getAllSessions = async () => {
+  const sessions = await Session.find()
+    .populate('host', 'name')           
+    .populate('participants', 'name');  
+  return sessions;
 };
 

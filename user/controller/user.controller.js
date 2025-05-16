@@ -34,8 +34,6 @@ export const userSignup = asyncWrapper(async(req, res, next) => {
     weight: req.body.weight,
     fitnessGoal: req.body.fitnessGoal,
     activityLevel: req.body.activityLevel,
-    achievements: req.body.achievements,
-    workoutHistory: req.body.workoutHistory,
     role: req.body.role
   }
   
@@ -86,8 +84,6 @@ export const updateUser = asyncWrapper(async (req, res, next) => {
     fitnessGoal: req.body.fitnessGoal,
     activityLevel: req.body.activityLevel,
     points: req.body.points,
-    achievements: req.body.achievements,
-    workoutHistory: req.body.workoutHistory,
   }
   
   user = await userUpdate(id, user, { new: true });

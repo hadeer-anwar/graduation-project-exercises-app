@@ -7,7 +7,7 @@ const userChallengeProgressSchema = new mongoose.Schema({
     required: true 
   },
   sessionId: { 
-    type: mongoose.Schema.Types.ObjectId, 
+    type: String, 
     ref: "Session", 
     required: true 
   },

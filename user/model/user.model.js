@@ -33,21 +33,6 @@ const userSchema = new mongoose.Schema(
     },
     points: { type: Number, min: 0, default: 0 },
 
-    achievements: [{ type: mongoose.Schema.Types.ObjectId, ref: "Challenge" }],
-
-    workingChallenges: [
-      {
-        challenge: { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" }, 
-        streakDays: { type: Number, min: 0, default: 0 }, 
-        completedDays: { type: Number, min: 0, default: 0 }, 
-        pointsEarned: { type: Number, min: 0, default: 0 }, 
-        isCompleted: { type: Boolean, default: false }, 
-        lastUpdated: { type: Date }
-      },
-    ],
-
-    workoutHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "Workout" }],
-
     role: { type: String, enum: ["user", "admin"], default: "user" },
      // Add these new fields for sharing functionality
      sharedPosts: [{
