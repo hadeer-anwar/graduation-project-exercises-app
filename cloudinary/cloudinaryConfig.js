@@ -18,6 +18,7 @@ const storage = new CloudinaryStorage({
       return {
         folder: "exercise_images", // Cloudinary will auto-create this folder if it doesn't exist
         allowed_formats: ["jpg", "jpeg", "png", "gif"],
+        resource_type:"image"
       };
     } else if (file.fieldname === "video") {
       return {

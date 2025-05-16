@@ -23,8 +23,8 @@ const communityRouter = express.Router();
 communityRouter.get("/posts/getPosts",getPosts);
 communityRouter.post("/posts/createPost",authToken,
   uploadFiles.fields([
-    { name: "image", maxCount: 4 },
-    { name: "video", maxCount: 4 },
+    { name: "imageUrls", maxCount: 4 },
+    { name: "videoUrls", maxCount: 4 },
   ])
   ,postValidator, createPost);
 communityRouter.get('/posts/getPostById/:id',getPost)

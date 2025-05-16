@@ -13,7 +13,7 @@ import router from './routes/auth.js'
 import './passport.js'
 import workoutRouter from './routes/workout.routes.js';
 import exerciseRouter from './routes/exercise.routes.js';
-import postRouter from './routes/community.routes.js'
+import communityRouter from './routes/community.routes.js'
 import chatbotRouter from './routes/chatbot.routes.js';
 import triviaQuestionRouter from './routes/triviaQuestion.route.js';
 import challengeRouter from './routes/challenge.route.js';
@@ -58,7 +58,7 @@ app.use(`/api/v1/users`, userRouter);
 app.use('/api/v1/auth', router);
 app.use('/api/v1/workout',workoutRouter);
 app.use('/api/v1/exercise', exerciseRouter);
-app.use('/api/v1/community', postRouter)
+app.use('/api/v1/community', communityRouter)
 app.use('/api/v1/chatbot', chatbotRouter);
 app.use('/api/v1/trivia-questions', triviaQuestionRouter)
 app.use('/api/v1/challenge', challengeRouter)
