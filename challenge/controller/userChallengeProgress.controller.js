@@ -2,17 +2,24 @@
 import * as progressService from '../service/userChallengeProgress.service.js';
 import asyncWrapper from '../../middlewares/asyncWrapper.js'
 
-export const updateProgress = asyncWrapper( async (req, res) => {
+import { io } from '../../index.js'
 
-    const { userId, sessionId, challengeId, score, completed } = req.body;
-    const updatedProgress = await progressService.updateChallengeProgress({ userId, sessionId, challengeId, score, completed });
+export const updateProgress = asyncWrapper(async (req, res) => {
+  const { userId, sessionId, challengeId, score, completed } = req.body;
 
-    // Optionally emit leaderboard update via socket.io or similar
-    // io.to(sessionId).emit("leaderboardUpdated", updatedLeaderboard);
+  const updatedProgress = await progressService.updateChallengeProgress({
+    userId, sessionId, challengeId, score, completed
+  });
 
-    res.status(200).json({ success: true, data: updatedProgress });
+  // Fetch the new leaderboard
+  const updatedLeaderboard = await progressService.getLeaderboardForSession(sessionId);
 
+  // Emit leaderboard to clients in the session
+  io.to(sessionId).emit('leaderboardUpdated', updatedLeaderboard);
+
+  res.status(200).json({ success: true, data: updatedProgress });
 });
+
 
 export const getLeaderboard = asyncWrapper(async (req, res) => {
 

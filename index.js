@@ -5,12 +5,26 @@ import app from "./app.js";
 dotenv.config({
     path: "./.env"
 })
+
+import http from 'http';
+import { Server } from 'socket.io';
+
+const server = http.createServer(app);
+
+export const io = new Server(server, {
+  cors: {
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+  }
+});
+
 const db = process.env.DB_URL
 mongoose.connect(db).then(async()=>{
     console.log("Database Is Connected ✅");
 }).catch(err => {
     console.error("Failed to connect to database", err);
 });
-app.listen(process.env.PORT || 3000,'0.0.0.0', () => {
-    console.log("Server is running on port 3000");
-})
+
+server.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
