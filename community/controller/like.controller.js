@@ -9,6 +9,7 @@ export const likePost = asyncWrapper(async (req, res) => {
   const post = await likeService.likePost(req.params.postId, req.user._id);
   res.status(200).json({
     success: true,
+    message: "post liked successfully",
     data: post
   });
 });
@@ -21,6 +22,7 @@ export const unlikePost = asyncWrapper(async (req, res) => {
   const post = await likeService.unlikePost(req.params.postId, req.user._id);
   res.status(200).json({
     success: true,
+    message: "post unliked successfully",
     data: post
   });
 });

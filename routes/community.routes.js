@@ -7,7 +7,8 @@ import {
   getPostDetails,
   getUserPosts,
   getUserSharedPosts,
-  getAllUserPosts
+  getAllUserPosts,
+  editPost
 } from '../community/controller/post.controller.js';
 import { uploadFiles } from "../cloudinary/cloudinaryConfig.js";
 import { postValidator } from '../middlewares/postValidator.js';
@@ -28,8 +29,18 @@ communityRouter.post("/posts/createPost",authToken,
   ])
   ,postValidator, createPost);
 communityRouter.get('/posts/getPostById/:id',getPost)
-  
+communityRouter.get('/posts/details/:id', getPostDetails)
 communityRouter.delete( '/posts/deletePostById/:id',authToken, deletePost);
+communityRouter.put(
+  "/posts/edit/:id",
+  authToken,
+  uploadFiles.fields([
+    { name: "imageUrls", maxCount: 4 },
+    { name: "videoUrls", maxCount: 4 },
+  ]),
+  postValidator,
+  editPost
+);
 
 communityRouter.post('/like/:postId', authToken, likePost);
 communityRouter.post('/unlike/:postId', authToken, unlikePost);

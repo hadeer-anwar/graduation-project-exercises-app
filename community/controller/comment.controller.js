@@ -7,6 +7,7 @@ export const getPostComments = asyncWrapper(async (req, res) => {
   
   res.status(200).json({
     success: true,
+    message: "comments fetched",
     count: comments.length,
     data: comments
   });
@@ -26,6 +27,7 @@ export const addComment = asyncWrapper(async (req, res) => {
   
   res.status(201).json({
     success: true,
+    message: "comment added successfully",
     data: { post, comment }
   });
 });
@@ -48,6 +50,7 @@ export const replyToComment = asyncWrapper(async (req, res) => {
   
   res.status(201).json({
     success: true,
+    message: "comment added successfully",
     data: reply
   });
 });
@@ -66,6 +69,7 @@ export const editComment = asyncWrapper(async (req, res) => {
 
   res.status(200).json({
     success: true,
+    message: "comment updated successfully",
     data: comment
   });
 });

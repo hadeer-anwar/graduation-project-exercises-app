@@ -28,16 +28,16 @@ export const createPost = async (userId, postData) => {
 
 export const getAllPosts = async () => {
     return await Post.find()
-        .populate('user', 'username profilePicture')
-        .populate('likes', 'username profilePicture')
+        .populate('user', 'name email profilePicture')
+        .populate('likes', 'name email profilePicture')
         .populate('comments')
         .sort({ createdAt: -1 });
 };
 
 export const getPostById = async (postId) => {
     const post = await Post.findById(postId)
-        .populate('user', 'username profilePicture')
-        .populate('likes', 'username profilePicture')
+        .populate('user', 'name email profilePicture')
+        .populate('likes', 'name email profilePicture')
         .populate('comments');
     
     if (!post) throw new appError('Post not found', 404);
@@ -63,35 +63,51 @@ export const getPostWithComments = async (postId) => {
             populate: [
                 {
                     path: 'user',
-                    select: 'username profilePicture'
+                    select: 'name email profilePicture'
                 },
                 {
                     path: 'replies',
                     populate: {
                         path: 'user',
-                        select: 'username profilePicture'
+                        select: 'name email profilePicture'
                     }
                 }
             ]
         })
-        .populate('user', 'username profilePicture')
-        .populate('likes', 'username profilePicture');
+        .populate('user', 'name email profilePicture')
+        .populate('likes', 'name email profilePicture');
 };
 
 export const getUserCreatedPosts = async (userId) => {
-    return await Post.find({ user: userId })
-        .sort({ createdAt: -1 })
-        .populate('user', 'username profilePicture')
-        .populate('likes', 'username profilePicture')
-        .populate('comments');
+  return await Post.find({ user: userId })
+    .sort({ createdAt: -1 })
+    .populate('user', 'name email profilePicture')
+    .populate('likes', 'name email profilePicture')
+    .populate({
+      path: 'comments',
+      populate: [
+        {
+          path: 'user',
+          select: 'name email profilePicture'
+        },
+        {
+          path: 'replies',
+          populate: {
+            path: 'user',
+            select: 'name email profilePicture'
+          }
+        }
+      ]
+    });
 };
+
 
 export const getUserSharedPosts = async (userId) => {
     const user = await User.findById(userId).populate({
         path: 'sharedPosts',
         populate: [
-            { path: 'user', select: 'username profilePicture' },
-            { path: 'likes', select: 'username profilePicture' },
+            { path: 'user', select: 'name email profilePicture' },
+            { path: 'likes', select: 'name email profilePicture' },
             { path: 'comments' }
         ]
     });
@@ -114,4 +130,35 @@ export const getAllUserPosts = async (userId) => {
         allPosts: [...createdPosts, ...sharedPosts].sort((a, b) => 
             new Date(b.createdAt) - new Date(a.createdAt))
     };
+};
+
+
+export const updatePost = async (postId, userId, updateData) => {
+    const post = await Post.findById(postId);
+    if (!post) throw new appError('Post not found', 404);
+
+    // Only the original creator can edit the post
+    if (post.user.toString() !== userId.toString()) {
+        throw new appError('Not authorized to edit this post', 403);
+    }
+
+    const { content, imageUrls, videoUrls } = updateData;
+
+    // Validate and apply updates
+    if (content !== undefined) post.content = content;
+    if (Array.isArray(imageUrls)) post.imageUrls = imageUrls;
+    if (Array.isArray(videoUrls)) post.videoUrls = videoUrls;
+
+    await post.save();
+
+    return await Post.findById(postId)
+        .populate('user', 'name email profilePicture')
+        .populate('likes', 'name email profilePicture')
+        .populate({
+            path: 'comments',
+            populate: {
+                path: 'user',
+                select: 'name profilePicture'
+            }
+        });
 };

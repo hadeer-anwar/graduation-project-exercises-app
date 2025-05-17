@@ -14,7 +14,7 @@ export const sharePost = async (postId, userId) => {
   }
 
   // Update the post (increment shares and add user to sharedBy)
-  const post = await Post.findByIdAndUpdate(
+  const updated = await Post.findByIdAndUpdate(
     postId,
     {
       $inc: { shares: 1 },
@@ -23,7 +23,21 @@ export const sharePost = async (postId, userId) => {
     { new: true }
   );
 
-  if (!post) throw new appError('Post not found', 404);
+  if (!updated) throw new appError('Post not found', 404);
+
+  // Populate likes and comments
+  const post = await Post.findById(postId)
+    .populate({
+    path: 'likes',
+    select: 'name profilePicture' 
+    })    
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'user',     
+        select: 'name profilePicture' 
+      }
+    });
 
   // Update the user's sharedPosts array
   await User.findByIdAndUpdate(
@@ -33,6 +47,7 @@ export const sharePost = async (postId, userId) => {
 
   return post;
 };
+
 
 export const undoSharePost = async (postId, userId) => {
   // Check if user actually shared this post
