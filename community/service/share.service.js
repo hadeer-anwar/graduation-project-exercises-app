@@ -1,6 +1,7 @@
 import appError from "../../utils/appError.js";
 import Post from "../../community/model/post.model.js";
 import User from "../../user/model/user.model.js";
+import { sendNotification } from "../../utils/sendNotification.js";
 
 export const sharePost = async (postId, userId) => {
   // Check if user already shared this post
@@ -44,6 +45,13 @@ export const sharePost = async (postId, userId) => {
     userId,
     { $addToSet: { sharedPosts: postId } }
   );
+  
+     await sendNotification({
+      recipient: post.user,
+      sender: userId,
+      type: 'share',
+      post: post._id
+    });
 
   return post;
 };

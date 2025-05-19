@@ -1,7 +1,7 @@
 import appError from "../../utils/appError.js";
 import Post from "../model/post.model.js";
 import Comment from '../model/comment.model.js'
-
+import { sendNotification } from "../../utils/sendNotification.js";
 
 export const getCommentsByPostId = async (postId) => {
   const post = await Post.findById(postId)
@@ -55,6 +55,13 @@ export const addComment = async (postId, userId, content) => {
   await comment.save();
   post.comments.push(comment._id);
   await post.save();
+
+    await sendNotification({
+    recipient: post.user,
+    sender: userId,
+    type: 'comment',
+    post: post._id
+  });
   
   return { post, comment };
 

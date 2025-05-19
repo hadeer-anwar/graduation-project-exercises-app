@@ -1,5 +1,7 @@
 import appError from "../../utils/appError.js";
 import Post from "../model/post.model.js";
+import { sendNotification } from "../../utils/sendNotification.js";
+
 
 export const likePost = async (postId, userId) => {
   const post = await Post.findById(postId);
@@ -17,6 +19,15 @@ export const likePost = async (postId, userId) => {
   }
   
   await post.save();
+
+     await sendNotification({
+      recipient: post.user,
+      sender: userId,
+      type: 'like',
+      post: post._id
+    });
+  
+
   return post;
 };
 
