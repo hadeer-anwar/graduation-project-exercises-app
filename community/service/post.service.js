@@ -30,6 +30,7 @@ export const getAllPosts = async () => {
     return await Post.find()
         .populate('user', 'name email profilePicture')
         .populate('likes', 'name email profilePicture')
+        .populate('sharedBy', 'name email profilePicture') 
         .populate('comments')
         .sort({ createdAt: -1 });
 };
@@ -38,6 +39,7 @@ export const getPostById = async (postId) => {
     const post = await Post.findById(postId)
         .populate('user', 'name email profilePicture')
         .populate('likes', 'name email profilePicture')
+        .populate('sharedBy', 'name email profilePicture') 
         .populate('comments');
     
     if (!post) throw new appError('Post not found', 404);
@@ -75,7 +77,8 @@ export const getPostWithComments = async (postId) => {
             ]
         })
         .populate('user', 'name email profilePicture')
-        .populate('likes', 'name email profilePicture');
+        .populate('likes', 'name email profilePicture')
+        .populate('sharedBy', 'name email profilePicture') 
 };
 
 export const getUserCreatedPosts = async (userId) => {
@@ -83,6 +86,7 @@ export const getUserCreatedPosts = async (userId) => {
     .sort({ createdAt: -1 })
     .populate('user', 'name email profilePicture')
     .populate('likes', 'name email profilePicture')
+    .populate('sharedBy', 'name email profilePicture') 
     .populate({
       path: 'comments',
       populate: [

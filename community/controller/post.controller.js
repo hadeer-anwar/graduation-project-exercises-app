@@ -135,3 +135,23 @@ export const editPost = asyncWrapper(async (req, res) => {
         data: updatedPost,
     });
 });
+
+export const getPostWithComments = asyncWrapper(async (req, res) => {
+    const postId = req.params.id;
+
+    const post = await postService.getPostWithComments(postId);
+
+    if (!post) {
+        return res.status(404).json({
+            success: false,
+            message: "Post not found",
+        });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Post with comments and replies",
+        data: post,
+    });
+});
+

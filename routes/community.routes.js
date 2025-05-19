@@ -29,6 +29,7 @@ communityRouter.post("/posts/createPost",authToken,
   ])
   ,postValidator, createPost);
 communityRouter.get('/posts/getPostById/:id',getPost)
+communityRouter.get('/posts/getComments/:id',getPostComments)
 communityRouter.get('/posts/details/:id', getPostDetails)
 communityRouter.delete( '/posts/deletePostById/:id',authToken, deletePost);
 communityRouter.put(
