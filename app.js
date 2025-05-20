@@ -62,7 +62,7 @@ app.use('/api/v1/community', communityRouter)
 app.use('/api/v1/chatbot', chatbotRouter);
 app.use('/api/v1/trivia-questions', triviaQuestionRouter)
 app.use('/api/v1/challenge', challengeRouter)
-app.use('/api/v1/challengeSession/', sessionRouter)
+app.use('/api/v1/challengeSession', sessionRouter)
 app.use('/api/v1/progress', userExerciseProgressRouter)
 app.use('/api/v1/challenge-progress', userChallengeProgressRouter)
 // Error handling
