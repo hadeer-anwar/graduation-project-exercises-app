@@ -31,7 +31,17 @@ export const createSession = async (hostId, challengeCount = 2) => {
     sessionId: generateRandomId() // Your existing ID generator
   });
 
-  return session;
+    const populatedSession = await Session.findById(session._id)
+    .populate({
+      path: 'challenges',
+      populate: [
+        { path: 'exerciseId' },
+        { path: 'questionId', select: 'question options' }
+      ]
+    })
+    .populate('host', 'name email profilePicture');
+
+  return populatedSession;
 };
 
 export const startSession = async (sessionId, userId) => {
