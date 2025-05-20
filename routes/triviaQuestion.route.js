@@ -6,11 +6,11 @@ import {
   updateQuestion,
   deleteQuestion
 } from '../challenge/controller/triviaQuestion.controller.js';
-
+import { triviaQuestionValidator } from '../middlewares/triviaQuestionValidator.js';
 const triviaQuestionRouter = express.Router();
 
 
-triviaQuestionRouter.route('/createTriviaQuestion').post(createQuestion)
+triviaQuestionRouter.route('/createTriviaQuestion').post(triviaQuestionValidator, createQuestion)
 triviaQuestionRouter.route('/getTriviaQuestions').get(getQuestions);
 
 

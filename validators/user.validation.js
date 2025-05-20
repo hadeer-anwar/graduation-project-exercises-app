@@ -1,7 +1,6 @@
 
 import Joi from 'joi';
 import User from '../user/model/user.model.js';
-import bcrypt from 'bcryptjs';
 import appError from '../utils/appError.js';
 
 // User creation validation
@@ -27,18 +26,6 @@ export const validateUser = Joi.object({
     .valid("sedentary", "active", "highly active", "")
     .optional(),
   points: Joi.number().min(0).default(0),
-  achievements: Joi.array().items(Joi.string().hex().length(24)).optional(),
-  workingChallenges: Joi.array().items(
-    Joi.object({
-      challenge: Joi.string().hex().length(24).required(),
-      streakDays: Joi.number().min(0).default(0),
-      completedDays: Joi.number().min(0).default(0),
-      pointsEarned: Joi.number().min(0).default(0),
-      isCompleted: Joi.boolean().default(false),
-      lastUpdated: Joi.date().optional(),
-    })
-  ),
-  workoutHistory: Joi.array().items(Joi.string().hex().length(24)).optional(),
   role: Joi.string().valid("user", "admin").default("user"),
 }).unknown(true); // Allows extra fields not defined in the schema
 
