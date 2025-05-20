@@ -31,7 +31,22 @@ export const getAllPosts = async () => {
         .populate('user', 'name email profilePicture')
         .populate('likes', 'name email profilePicture')
         .populate('sharedBy', 'name email profilePicture') 
-        .populate('comments')
+        .populate({
+            path: 'comments',
+            populate: [
+                {
+                    path: 'user',
+                    select: 'name email profilePicture'
+                },
+                {
+                    path: 'replies',
+                    populate: {
+                        path: 'user',
+                        select: 'name email profilePicture'
+                    }
+                }
+            ]
+        })
         .sort({ createdAt: -1 });
 };
 
