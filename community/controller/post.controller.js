@@ -155,3 +155,17 @@ export const getPostWithComments = asyncWrapper(async (req, res) => {
     });
 });
 
+
+
+export const getFollowingPosts = asyncWrapper(async (req, res) => {
+  const userId = req.user._id;
+
+  const posts = await postService.getPostsFromFollowing(userId);
+
+  res.status(200).json({
+    success: true,
+    message: "Posts from followed users",
+    data: posts
+  });
+});
+

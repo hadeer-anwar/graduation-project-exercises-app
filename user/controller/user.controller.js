@@ -12,6 +12,8 @@ import {
   checkCurrentPassword, 
   updateUserPassword ,
   adminLogin,
+  followUser,
+  unfollowUser
 } from '../service/user.service.js'
 
 const tokenOption = {
@@ -189,3 +191,30 @@ export const logoutUser = asyncWrapper(async(req, res, next) => {
     message: 'Logged out successfully'
   });
 })
+
+
+export const follow = asyncWrapper(async (req, res) => {
+  const targetUserId = req.params.id;
+  const currentUserId = req.user._id;
+
+  const followed = await followUser(currentUserId, targetUserId);
+
+  res.status(200).json({
+    success: true,
+    message: `You are now following ${followed.name}`,
+    data: followed,
+  });
+});
+
+export const unfollow = asyncWrapper(async (req, res) => {
+  const targetUserId = req.params.id;
+  const currentUserId = req.user._id;
+
+  const unfollowed = await unfollowUser(currentUserId, targetUserId);
+
+  res.status(200).json({
+    success: true,
+    message: `You unfollowed ${unfollowed.name}`,
+    data: unfollowed,
+  });
+});

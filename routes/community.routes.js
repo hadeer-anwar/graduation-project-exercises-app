@@ -8,7 +8,8 @@ import {
   getUserPosts,
   getUserSharedPosts,
   getAllUserPosts,
-  editPost
+  editPost,
+  getFollowingPosts
 } from '../community/controller/post.controller.js';
 import { uploadFiles } from "../cloudinary/cloudinaryConfig.js";
 import { postValidator } from '../middlewares/postValidator.js';
@@ -55,7 +56,8 @@ communityRouter.post('/comments/replyToComment/:commentId', authToken, replyToCo
 communityRouter.patch('/comments/editComment/:commentId', authToken,commentValidator ,editComment);
 communityRouter.delete('/comments/deleteComment/:commentId', authToken, deleteComment);
 
-// Add these routes
+communityRouter.get('/following/posts', authToken, getFollowingPosts)
+
 communityRouter.get('/user-posts', authToken, getUserPosts);
 communityRouter.get('/user-shares', authToken, getUserSharedPosts);
 communityRouter.get('/user-all-posts', authToken, getAllUserPosts);

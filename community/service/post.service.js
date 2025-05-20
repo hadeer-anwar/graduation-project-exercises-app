@@ -181,3 +181,34 @@ export const updatePost = async (postId, userId, updateData) => {
             }
         });
 };
+
+
+export const getPostsFromFollowing = async (userId) => {
+  const user = await User.findById(userId);
+
+  if (!user) throw new appError('User not found');
+
+  const posts = await Post.find({ user: { $in: user.following } })
+    .populate('user', 'name email profilePicture')
+    .populate('likes', 'name email profilePicture')
+    .populate('sharedBy', 'name email profilePicture') 
+    .populate({
+      path: 'comments',
+      populate: [
+        {
+          path: 'user',
+          select: 'name email profilePicture'
+        },
+        {
+          path: 'replies',
+          populate: {
+            path: 'user',
+            select: 'name email profilePicture'
+          }
+        }
+      ]
+    })
+    .sort({ createdAt: -1 });
+
+  return posts;
+};

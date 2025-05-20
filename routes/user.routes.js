@@ -9,6 +9,8 @@ import { changePassword,
          userSignin, 
          userSignup,
          adminSignin,
+         follow,
+         unfollow,
          }
          from "../user/controller/user.controller.js";
 
@@ -31,10 +33,13 @@ userRouter.post("/forgot-password", forgotPassword)
 userRouter.post("/check-otp", checkResetCodeController)
 userRouter.post("/reset-password", resetPasswordController)
 userRouter.get("/my-profile", authToken, getMyProfile)
-userRouter.get("/", authToken, authorizeRole("admin"), getUsers)
-userRouter.get("/:id", authToken, authorizeRole("admin"), getOneUser)
+userRouter.get("/",  getUsers)
+userRouter.get("/:id", getOneUser)
 userRouter.put("/:id", authToken, userUpdateValidator, updateUser);
-userRouter.delete("/:id", authToken, authorizeRole("admin"), deleteOneUser )
+userRouter.delete("/:id", authToken, deleteOneUser )
 userRouter.put("/changeRole/:id", authToken, authorizeRole("admin"), changeUserRole)
-
+userRouter.post("/follow/:id", authToken, follow)
+userRouter.post("/unfollow/:id", authToken, unfollow)
 export default userRouter;
+
+ 

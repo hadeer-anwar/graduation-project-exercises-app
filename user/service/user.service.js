@@ -2,6 +2,7 @@ import User from "../model/user.model.js";
 import appError from '../../utils/appError.js'
 import generateToken from "../../utils/generateToken.js";
 import bcrypt from 'bcryptjs';
+import {sendNotification} from '../../utils/sendNotification.js'
 
 // add user
 
@@ -129,12 +130,16 @@ export const getAllUsers = async ()=>{
 }
 
 // get user by id
-export const getUserById = async (id)=>{
-  const user = await User.findById(id);
-  if(!user)
-    throw new appError("User not found")
-  return user
-}
+export const getUserById = async (id) => {
+  const user = await User.findById(id)
+    .populate('followers', 'name email profilePicture')     
+    .populate('following', 'name email profilePicture');
+
+  if (!user)
+    throw new appError("User not found");
+
+  return user;
+};
 
 // delete user 
 export const deleteUserById = async (id)=>{
@@ -157,4 +162,44 @@ export const changeRole = async (id, data)=>{
 }
 
 
+
+export const followUser = async (currentUserId, targetUserId) => {
+  if (currentUserId === targetUserId) throw new appError("You can't follow yourself");
+
+  const currentUser = await User.findById(currentUserId);
+  const targetUser = await User.findById(targetUserId);
+
+  if (!currentUser || !targetUser) throw new appError("User not found");
+
+  if (!currentUser.following.includes(targetUserId)) {
+    currentUser.following.push(targetUserId);
+    targetUser.followers.push(currentUserId);
+
+    sendNotification({
+  recipient: targetUserId,
+  sender: currentUserId,
+  type: 'follow'
+});
+
+    await currentUser.save();
+    await targetUser.save();
+  }
+
+  return targetUser;
+};
+
+export const unfollowUser = async (currentUserId, targetUserId) => {
+  const currentUser = await User.findById(currentUserId);
+  const targetUser = await User.findById(targetUserId);
+
+  if (!currentUser || !targetUser) throw new appError("User not found");
+
+  currentUser.following = currentUser.following.filter(id => id.toString() !== targetUserId);
+  targetUser.followers = targetUser.followers.filter(id => id.toString() !== currentUserId);
+
+  await currentUser.save();
+  await targetUser.save();
+
+  return targetUser;
+};
 
