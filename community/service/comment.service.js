@@ -10,20 +10,20 @@ export const getCommentsByPostId = async (postId) => {
       populate: [
         {
           path: 'user',
-          select: 'name avatar' // Only include name and avatar
+          select: 'name profilePicture' // Only include name and avatar
         },
         {
           path: 'replies',
           populate: [
             {
               path: 'user',
-              select: 'name avatar'
+              select: 'name profilePicture'
             },
             {
               path: 'replies', // For nested replies
               populate: {
                 path: 'user',
-                select: 'name avatar'
+                select: 'name profilePicture'
               }
             }
           ]
@@ -44,53 +44,54 @@ export const getCommentsByPostId = async (postId) => {
 
 export const addComment = async (postId, userId, content) => {
   const post = await Post.findById(postId);
-  
   if (!post) throw new appError('Post not found');
-  
-  const comment = new Comment({
-    user: userId,
-    content
-  })
 
+  const comment = new Comment({ user: userId, content });
   await comment.save();
+
   post.comments.push(comment._id);
   await post.save();
 
-    await sendNotification({
+  await sendNotification({
     recipient: post.user,
     sender: userId,
     type: 'comment',
     post: post._id
   });
-  
-  return { post, comment };
 
-}
+  const populatedComment = await Comment.findById(comment._id).populate({
+    path: 'user',
+    select: 'name profilePicture'
+  });
+
+  return { postId: post._id, comment: populatedComment };
+};
+
 
 export const replyToComment = async (commentId, userId, content) => {
   const parentComment = await Comment.findById(commentId);
-  if (!parentComment) throw new Error('Comment not found');
-  
-  const reply = new Comment({
-    user: userId,
-    content
-  });
-  
+  if (!parentComment) throw new appError('Comment not found', 404);
+
+  const reply = new Comment({ user: userId, content });
   await reply.save();
+
   parentComment.replies.push(reply._id);
   await parentComment.save();
-  
-  return reply;
+
+  const populatedReply = await Comment.findById(reply._id).populate({
+    path: 'user',
+    select: 'name profilePicture'
+  });
+
+  return populatedReply;
 };
+
 
 
 
 export const editComment = async (commentId, userId, content) => {
   const comment = await Comment.findOneAndUpdate(
-    {
-      _id: commentId,
-      user: userId // Only allow update if user matches
-    },
+    { _id: commentId, user: userId },
     { content },
     { new: true, runValidators: true }
   );
@@ -99,8 +100,14 @@ export const editComment = async (commentId, userId, content) => {
     throw new appError('Comment not found or you are not authorized to edit it', 404);
   }
 
-  return comment;
+  const populatedComment = await Comment.findById(comment._id).populate({
+    path: 'user',
+    select: 'name profilePicture'
+  });
+
+  return populatedComment;
 };
+
 
 export const deleteComment = async (commentId, userId) => {
   // Find the comment and verify ownership
