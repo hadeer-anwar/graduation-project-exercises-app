@@ -103,12 +103,14 @@ export const joinSession = async (sessionId, userId) => {
   if (!session) throw new appError("Session not found", 404);
   if (session.status === "completed") throw new appError("Session ended", 400);
 
+  // Check if user already joined
+  const alreadyJoined = session.participants.includes(userId);
+  if (alreadyJoined) throw new appError("User already joined", 400);
+
   session.participants.push(userId);
   await session.save();
 
-
-  
-    const populatedSession = await Session.findById(session._id)
+  const populatedSession = await Session.findById(session._id)
     .populate({
       path: 'challenges',
       populate: [
@@ -121,6 +123,7 @@ export const joinSession = async (sessionId, userId) => {
 
   return populatedSession;
 };
+
 
 export const getAllSessions = async () => {
   const sessions = await Session.find()
