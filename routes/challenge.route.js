@@ -11,7 +11,7 @@ import { validateChallenge } from '../validators/challenge.validation.js';
 
 const challengeRouter = express.Router();
 
-challengeRouter.post('/create', validateChallenge, createChallenge)
+challengeRouter.post('/create', createChallenge)
 challengeRouter.get('/', getAllChallenges)
 challengeRouter.get('/:id', getChallenge)
 challengeRouter.put('/:id', updateChallenge)

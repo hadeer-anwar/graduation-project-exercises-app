@@ -127,9 +127,21 @@ export const getUserSharedPosts = async (userId) => {
         populate: [
             { path: 'user', select: 'name email profilePicture' },
             { path: 'likes', select: 'name email profilePicture' },
-            { path: 'comments' }
+            { path: 'comments' ,    populate: [
+        {
+          path: 'user',
+          select: 'name email profilePicture'
+        },
+        {
+          path: 'replies',
+          populate: {
+            path: 'user',
+            select: 'name email profilePicture'
+          }
+        }
+      ]}
         ]
-    });
+    })
     
     if (!user) throw new appError('User not found', 404);
     return user.sharedPosts || [];
@@ -171,15 +183,25 @@ export const updatePost = async (postId, userId, updateData) => {
     await post.save();
 
     return await Post.findById(postId)
-        .populate('user', 'name email profilePicture')
-        .populate('likes', 'name email profilePicture')
-        .populate({
-            path: 'comments',
-            populate: {
-                path: 'user',
-                select: 'name profilePicture'
-            }
-        });
+       .populate('user', 'name email profilePicture')
+    .populate('likes', 'name email profilePicture')
+    .populate('sharedBy', 'name email profilePicture') 
+    .populate({
+      path: 'comments',
+      populate: [
+        {
+          path: 'user',
+          select: 'name email profilePicture'
+        },
+        {
+          path: 'replies',
+          populate: {
+            path: 'user',
+            select: 'name email profilePicture'
+          }
+        }
+      ]
+    })
 };
 
 

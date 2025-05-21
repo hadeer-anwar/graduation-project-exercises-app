@@ -62,7 +62,20 @@ export const startSession = async (sessionId, userId) => {
   session.status = "active";
   await session.save();
 
-  return session;
+    const populatedSession = await Session.findById(session._id)
+    .populate({
+      path: 'challenges',
+      populate: [
+        { path: 'exerciseId' },
+        { path: 'questionId', select: 'question options' }
+      ]
+    })
+    .populate('host', 'name email profilePicture')
+    .populate('participants', 'name profilePicture');  
+
+  return populatedSession;
+
+
 };
 
 export const endSession = async (sessionId,userId ) => {
@@ -92,13 +105,34 @@ export const joinSession = async (sessionId, userId) => {
 
   session.participants.push(userId);
   await session.save();
-  return session;
+
+
+  
+    const populatedSession = await Session.findById(session._id)
+    .populate({
+      path: 'challenges',
+      populate: [
+        { path: 'exerciseId' },
+        { path: 'questionId', select: 'question options' }
+      ]
+    })
+    .populate('host', 'name email profilePicture')
+    .populate('participants', 'name profilePicture');  
+
+  return populatedSession;
 };
 
 export const getAllSessions = async () => {
   const sessions = await Session.find()
-    .populate('host', 'name')           
-    .populate('participants', 'name');  
+    .populate({
+      path: 'challenges',
+      populate: [
+        { path: 'exerciseId' },
+        { path: 'questionId', select: 'question options' }
+      ]
+    })
+    .populate('host', 'name profilePicture')           
+    .populate('participants', 'name profilePicture');  
   return sessions;
 };
 
