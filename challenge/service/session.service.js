@@ -36,7 +36,7 @@ export const createSession = async (hostId, challengeCount = 2) => {
       path: 'challenges',
       populate: [
         { path: 'exerciseId' },
-        { path: 'questionId', select: 'question options' }
+        { path: 'questionId'}
       ]
     })
     .populate('host', 'name email profilePicture');
@@ -67,7 +67,7 @@ export const startSession = async (sessionId, userId) => {
       path: 'challenges',
       populate: [
         { path: 'exerciseId' },
-        { path: 'questionId', select: 'question options' }
+        { path: 'questionId' }
       ]
     })
     .populate('host', 'name email profilePicture')
@@ -115,7 +115,7 @@ export const joinSession = async (sessionId, userId) => {
       path: 'challenges',
       populate: [
         { path: 'exerciseId' },
-        { path: 'questionId', select: 'question options' }
+        { path: 'questionId'}
       ]
     })
     .populate('host', 'name email profilePicture')
