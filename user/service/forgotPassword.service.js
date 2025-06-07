@@ -52,8 +52,8 @@ export const ForgotPassword = async (email) => {
     if (!user) {
       throw new appError("User not found", 404);
     }
-  
-    user.password = await bcrypt.hash(newPassword, 10);
+    
+    user.password = newPassword
     user.resetCode = undefined;
     user.resetCodeExpiry = undefined;
     await user.save();
