@@ -27,6 +27,6 @@ mongoose.connect(db)
   .then(() => console.log("Database Is Connected ✅"))
   .catch(err => console.error("Failed to connect to database", err));
 
-server.listen(3001, () => {
-  console.log('Server listening on port 3001');
+server.listen(3002, () => {
+  console.log('Server listening on port 3002');
 });

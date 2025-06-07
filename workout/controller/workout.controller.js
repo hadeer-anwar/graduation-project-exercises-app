@@ -58,6 +58,7 @@ export const getWorkoutByIdWithExercises = asyncWrapper( async (req, res, next)=
 // Update workout
 // Update workout - Modified to handle both JSON and form-data
 export const updateWorkout = asyncWrapper(async (req, res, next) => {
+    console.log("gamgom",req.body)
     const { workoutId } = req.params;
     
     // Handle both JSON and form-data
