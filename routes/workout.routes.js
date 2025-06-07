@@ -23,10 +23,12 @@ workoutRouter.post(
 workoutRouter.get("/", getAllWorkouts);
 workoutRouter.get("/:workoutId", getWorkoutById);
 workoutRouter.get("/workout-exercises/:workoutId", getWorkoutByIdWithExercises)
+
 workoutRouter.put("/:workoutId",  uploadFiles.fields([
     { name: "image", maxCount: 1 },
     { name: "video", maxCount: 1 },
   ]),workoutValidator, updateWorkout);
+  
 workoutRouter.delete("/:workoutId", deleteWorkout);
 
 export default workoutRouter;
