@@ -1,5 +1,6 @@
 import * as workoutService from "../service/workout.service.js";
 import asyncWrapper from '../../middlewares/asyncWrapper.js'
+import { validateWorkout } from "../../validators/workout.validation.js";
 // Create a new workout
 
 export const createWorkout = asyncWrapper( async (req, res, next)=>{
@@ -55,16 +56,34 @@ export const getWorkoutByIdWithExercises = asyncWrapper( async (req, res, next)=
 })
 
 // Update workout
-export const updateWorkout = asyncWrapper(async (req,res, next)=>{
+// Update workout - Modified to handle both JSON and form-data
+export const updateWorkout = asyncWrapper(async (req, res, next) => {
     const { workoutId } = req.params;
-    const workoutData = req.body;
+    
+    // Handle both JSON and form-data
+    const workoutData = req.file ? {
+        ...req.body,
+        imageUrl: req.file.path
+    } : req.body;
+
+    // Validate input
+    const { error } = validateWorkout(workoutData);
+    if (error) {
+        const errors = error.details.map(detail => detail.message);
+        return res.status(400).json({
+            success: false,
+            message: "Validation failed",
+            errors
+        });
+    }
+
     const updatedWorkout = await workoutService.updateWorkout(workoutId, workoutData);
     res.status(200).json({
-        success:true,
-        message:"workout updataed successfully",
-        data:updatedWorkout
-    })
-})
+        success: true,
+        message: "Workout updated successfully",
+        data: updatedWorkout
+    });
+});
 
 // Delete workout
 export const deleteWorkout = asyncWrapper(async (req, res, next)=>{
