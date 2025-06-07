@@ -11,6 +11,7 @@ import { changePassword,
          adminSignin,
          follow,
          unfollow,
+         addAdmin,
          }
          from "../user/controller/user.controller.js";
 
@@ -40,6 +41,7 @@ userRouter.delete("/:id", authToken, deleteOneUser )
 userRouter.put("/changeRole/:id", authToken, authorizeRole("admin"), changeUserRole)
 userRouter.post("/follow/:id", authToken, follow)
 userRouter.post("/unfollow/:id", authToken, unfollow)
+userRouter.post("/admin/add", authToken, authorizeRole("admin"), addAdmin);
 export default userRouter;
 
  

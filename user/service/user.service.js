@@ -203,3 +203,27 @@ export const unfollowUser = async (currentUserId, targetUserId) => {
   return targetUser;
 };
 
+
+
+
+export const createAdminUser = async ({ name, email, password, gender, age }) => {
+  // Check if user already exists
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new appError("User with this email already exists.");
+  }
+
+  const newAdmin = new User({
+    name,
+    email,
+    password,
+    gender,
+    age,
+    role: "admin",
+  });
+
+  await newAdmin.save();
+  return newAdmin;
+};
+
+

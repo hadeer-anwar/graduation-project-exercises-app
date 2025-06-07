@@ -13,7 +13,8 @@ import {
   updateUserPassword ,
   adminLogin,
   followUser,
-  unfollowUser
+  unfollowUser,
+  createAdminUser
 } from '../service/user.service.js'
 
 const tokenOption = {
@@ -218,3 +219,20 @@ export const unfollow = asyncWrapper(async (req, res) => {
     data: unfollowed,
   });
 });
+
+export const addAdmin = asyncWrapper ( async (req, res, next)=> {
+  const newAdmin = await createAdminUser({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    gender: req.body.gender,
+    age: req.body.age,
+  })
+
+   res.status(200).json({
+    data: newAdmin,
+    success: true,
+    error: false,
+    message: 'admin added successfully'
+  });
+})
