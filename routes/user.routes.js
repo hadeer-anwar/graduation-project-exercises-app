@@ -12,6 +12,7 @@ import { changePassword,
          follow,
          unfollow,
          addAdmin,
+         changeProfilePic,
          }
          from "../user/controller/user.controller.js";
 
@@ -23,6 +24,7 @@ import { userValidator, passwordValidator, userUpdateValidator } from "../middle
 
 import {authorizeRole} from '../middlewares/authorizeRole.js';
 import { checkResetCodeController, forgotPassword, resetPasswordController } from "../user/controller/forgotPassword.controller.js";
+import { uploadFiles } from "../cloudinary/cloudinaryConfig.js";
 
 const userRouter = express.Router();
 
@@ -42,6 +44,13 @@ userRouter.put("/changeRole/:id", authToken, authorizeRole("admin"), changeUserR
 userRouter.post("/follow/:id", authToken, follow)
 userRouter.post("/unfollow/:id", authToken, unfollow)
 userRouter.post("/admin/add", authToken, authorizeRole("admin"), addAdmin);
+userRouter.patch(
+  "/profile-picture",
+  authToken,
+  uploadFiles.single("image"), 
+  changeProfilePic
+);
+
 export default userRouter;
 
  

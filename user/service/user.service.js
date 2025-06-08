@@ -226,4 +226,15 @@ export const createAdminUser = async ({ name, email, password, gender, age }) =>
   return newAdmin;
 };
 
+// change profile picture
+export const changeProfilePicture = async (userId, imageUrl) => {
+  const user = await User.findById(userId);
+  if (!user) {
+  throw new appErrro("user not found")
+  }
+
+  user.profilePic = imageUrl;
+  await user.save();
+  return user;
+};
 

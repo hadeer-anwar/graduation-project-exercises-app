@@ -14,7 +14,8 @@ import {
   adminLogin,
   followUser,
   unfollowUser,
-  createAdminUser
+  createAdminUser,
+  changeProfilePicture
 } from '../service/user.service.js'
 
 const tokenOption = {
@@ -236,3 +237,20 @@ export const addAdmin = asyncWrapper ( async (req, res, next)=> {
     message: 'admin added successfully'
   });
 })
+
+
+export const changeProfilePic = async (req, res, next) => {
+  try {
+    const userId = req.user._id; 
+    const file = req.file;
+
+    if (!file || !file.path) {
+      return res.status(400).json({ message: "No image file uploaded" });
+    }
+
+    const updatedUser = await changeProfilePicture(userId, file.path); // Cloudinary returns `path` as the secure URL
+    res.status(200).json({ user: updatedUser, message: "Profile picture updated successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
