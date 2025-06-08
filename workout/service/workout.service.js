@@ -59,3 +59,11 @@ export const deleteWorkout = async (workoutId) => {
   if(!deletedWorkout)
     throw new appError("Can't delete workout");
 };
+
+// Get all unique workout names
+export const getAllWorkoutNames = async () => {
+  const workoutNames = await Workout.distinct("name");
+  if(!workoutNames || workoutNames.length === 0)
+    throw new appError("No workout names found");
+  return workoutNames;
+};

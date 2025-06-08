@@ -97,3 +97,12 @@ export const deleteWorkout = asyncWrapper(async (req, res, next)=>{
     })
 })
 
+// Get all unique workout names
+export const getAllWorkoutNames = asyncWrapper(async (req, res, next) => {
+  const workoutNames = await workoutService.getAllWorkoutNames();
+  res.status(200).json({
+    success: true,
+    message: "All workout names retrieved successfully",
+    data: workoutNames
+  });
+});

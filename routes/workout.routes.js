@@ -4,7 +4,8 @@ import { createWorkout,
          getWorkoutById,
          updateWorkout, 
          deleteWorkout, 
-         getWorkoutByIdWithExercises } from "../workout/controller/workout.controller.js";
+         getWorkoutByIdWithExercises,
+        getAllWorkoutNames } from "../workout/controller/workout.controller.js";
 import { workoutValidator } from "../middlewares/workoutValidator.js";
 import { uploadFiles } from "../cloudinary/cloudinaryConfig.js";
 
@@ -21,8 +22,10 @@ workoutRouter.post(
   createWorkout);
 
 workoutRouter.get("/", getAllWorkouts);
+workoutRouter.get("/names",getAllWorkoutNames)
 workoutRouter.get("/:workoutId", getWorkoutById);
 workoutRouter.get("/workout-exercises/:workoutId", getWorkoutByIdWithExercises)
+
 
 workoutRouter.put("/:workoutId",  uploadFiles.fields([
     { name: "image", maxCount: 1 },
