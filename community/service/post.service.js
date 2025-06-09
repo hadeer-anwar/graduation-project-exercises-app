@@ -18,12 +18,17 @@ export const createPost = async (userId, postData) => {
     const validImageUrls = imageUrls.filter(url => validateUrl(url));
     const validVideoUrls = videoUrls.filter(url => validateUrl(url));
 
-    return await Post.create({ 
+    const newPost = await Post.create({ 
         user: userId, 
         content,
         videoUrls: validVideoUrls,
         imageUrls: validImageUrls
     });
+
+  await User.findByIdAndUpdate(userId, {
+  $push: { posts: post._id }
+});
+return newPost;
 };
 
 export const getAllPosts = async () => {

@@ -132,8 +132,10 @@ export const getAllUsers = async ()=>{
 // get user by id
 export const getUserById = async (id) => {
   const user = await User.findById(id)
-    .populate('followers', 'name email profilePicture')     
-    .populate('following', 'name email profilePicture');
+    .populate('followers', 'name email profilePic')     
+    .populate('following', 'name email profilePic');
+    
+    
 
   if (!user)
     throw new appError("User not found");
