@@ -28,21 +28,21 @@ export const createPost = async (userId, postData) => {
 
 export const getAllPosts = async () => {
     return await Post.find()
-        .populate('user', 'name email profilePicture')
-        .populate('likes', 'name email profilePicture')
-        .populate('sharedBy', 'name email profilePicture') 
+        .populate('user', 'name email profilePic')
+        .populate('likes', 'name email profilePic')
+        .populate('sharedBy', 'name email profilePic') 
         .populate({
             path: 'comments',
             populate: [
                 {
                     path: 'user',
-                    select: 'name email profilePicture'
+                    select: 'name email profilePic'
                 },
                 {
                     path: 'replies',
                     populate: {
                         path: 'user',
-                        select: 'name email profilePicture'
+                        select: 'name email profilePic'
                     }
                 }
             ]
@@ -52,9 +52,9 @@ export const getAllPosts = async () => {
 
 export const getPostById = async (postId) => {
     const post = await Post.findById(postId)
-        .populate('user', 'name email profilePicture')
-        .populate('likes', 'name email profilePicture')
-        .populate('sharedBy', 'name email profilePicture') 
+        .populate('user', 'name email profilePic')
+        .populate('likes', 'name email profilePic')
+        .populate('sharedBy', 'name email profilePic') 
         .populate('comments');
     
     if (!post) throw new appError('Post not found', 404);
@@ -80,40 +80,40 @@ export const getPostWithComments = async (postId) => {
             populate: [
                 {
                     path: 'user',
-                    select: 'name email profilePicture'
+                    select: 'name email profilePic'
                 },
                 {
                     path: 'replies',
                     populate: {
                         path: 'user',
-                        select: 'name email profilePicture'
+                        select: 'name email profilePic'
                     }
                 }
             ]
         })
-        .populate('user', 'name email profilePicture')
-        .populate('likes', 'name email profilePicture')
-        .populate('sharedBy', 'name email profilePicture') 
+        .populate('user', 'name email profilePic')
+        .populate('likes', 'name email profilePic')
+        .populate('sharedBy', 'name email profilePic') 
 };
 
 export const getUserCreatedPosts = async (userId) => {
   return await Post.find({ user: userId })
     .sort({ createdAt: -1 })
-    .populate('user', 'name email profilePicture')
-    .populate('likes', 'name email profilePicture')
-    .populate('sharedBy', 'name email profilePicture') 
+    .populate('user', 'name email profilePic')
+    .populate('likes', 'name email profilePic')
+    .populate('sharedBy', 'name email profilePic') 
     .populate({
       path: 'comments',
       populate: [
         {
           path: 'user',
-          select: 'name email profilePicture'
+          select: 'name email profilePic'
         },
         {
           path: 'replies',
           populate: {
             path: 'user',
-            select: 'name email profilePicture'
+            select: 'name email profilePic'
           }
         }
       ]
@@ -125,18 +125,18 @@ export const getUserSharedPosts = async (userId) => {
     const user = await User.findById(userId).populate({
         path: 'sharedPosts',
         populate: [
-            { path: 'user', select: 'name email profilePicture' },
-            { path: 'likes', select: 'name email profilePicture' },
+            { path: 'user', select: 'name email profilePic' },
+            { path: 'likes', select: 'name email profilePic' },
             { path: 'comments' ,    populate: [
         {
           path: 'user',
-          select: 'name email profilePicture'
+          select: 'name email profilePic'
         },
         {
           path: 'replies',
           populate: {
             path: 'user',
-            select: 'name email profilePicture'
+            select: 'name email profilePic'
           }
         }
       ]}
@@ -183,21 +183,21 @@ export const updatePost = async (postId, userId, updateData) => {
     await post.save();
 
     return await Post.findById(postId)
-       .populate('user', 'name email profilePicture')
-    .populate('likes', 'name email profilePicture')
-    .populate('sharedBy', 'name email profilePicture') 
+       .populate('user', 'name email profilePic')
+    .populate('likes', 'name email profilePic')
+    .populate('sharedBy', 'name email profilePic') 
     .populate({
       path: 'comments',
       populate: [
         {
           path: 'user',
-          select: 'name email profilePicture'
+          select: 'name email profilePic'
         },
         {
           path: 'replies',
           populate: {
             path: 'user',
-            select: 'name email profilePicture'
+            select: 'name email profilePic'
           }
         }
       ]
@@ -211,21 +211,21 @@ export const getPostsFromFollowing = async (userId) => {
   if (!user) throw new appError('User not found');
 
   const posts = await Post.find({ user: { $in: user.following } })
-    .populate('user', 'name email profilePicture')
-    .populate('likes', 'name email profilePicture')
-    .populate('sharedBy', 'name email profilePicture') 
+    .populate('user', 'name email profilePic')
+    .populate('likes', 'name email profilePic')
+    .populate('sharedBy', 'name email profilePic') 
     .populate({
       path: 'comments',
       populate: [
         {
           path: 'user',
-          select: 'name email profilePicture'
+          select: 'name email profilePic'
         },
         {
           path: 'replies',
           populate: {
             path: 'user',
-            select: 'name email profilePicture'
+            select: 'name email profilePic'
           }
         }
       ]

@@ -15,7 +15,9 @@ import {
   followUser,
   unfollowUser,
   createAdminUser,
-  changeProfilePicture
+  changeProfilePicture,
+  getFollowers,
+  getFollowing
 } from '../service/user.service.js'
 
 const tokenOption = {
@@ -254,3 +256,23 @@ export const changeProfilePic = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+export const getUserFollowers = asyncWrapper(async (req, res) => {
+  const followers = await getFollowers(req.user._id);
+  res.status(200).json({
+    success: true,
+    count: followers.length,
+    data: followers,
+  });
+});
+
+export const getUserFollowing = asyncWrapper(async (req, res) => {
+  const following = await getFollowing(req.user._id);
+  res.status(200).json({
+    success: true,
+    count: following.length,
+    data: following,
+  });
+});

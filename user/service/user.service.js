@@ -238,3 +238,15 @@ export const changeProfilePicture = async (userId, imageUrl) => {
   return user;
 };
 
+export const getFollowers = async (userId) => {
+  const user = await User.findById(userId).populate('followers', 'name email profilePic');
+  if (!user) throw new appError('User not found', 404);
+  return user.followers;
+};
+
+export const getFollowing = async (userId) => {
+  const user = await User.findById(userId).populate('following', 'name email profilePic');
+  if (!user) throw new appError('User not found', 404);
+  return user.following;
+};
+
