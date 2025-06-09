@@ -44,7 +44,7 @@ const validateExercise = (data) => {
       "string.uri": "Invalid video URL format",
     }),
 
-    imagesUrl: Joi.array()
+    imageUrl: Joi.array()
       .items(Joi.string().uri().messages({
         "string.uri": "Invalid image URL format",
       }))

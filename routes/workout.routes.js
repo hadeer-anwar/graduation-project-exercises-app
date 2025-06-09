@@ -22,7 +22,7 @@ workoutRouter.post(
   createWorkout);
 
 workoutRouter.get("/", getAllWorkouts);
-workoutRouter.get("/names",getAllWorkoutNames)
+workoutRouter.get("/list/names",getAllWorkoutNames)
 workoutRouter.get("/:workoutId", getWorkoutById);
 workoutRouter.get("/workout-exercises/:workoutId", getWorkoutByIdWithExercises)
 

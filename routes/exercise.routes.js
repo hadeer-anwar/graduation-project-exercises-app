@@ -19,8 +19,8 @@ exerciseRouter.post(
 exerciseRouter.get("/", getAllExercises);
 exerciseRouter.get("/:id",getExerciseById);
 exerciseRouter.put("/:id", uploadFiles.fields([
-  { name: "image"},
-  { name: "video"}]),  updateExercise);
+  { name: "image",maxCount : 1},
+  { name: "video", maxCount : 1}]),  updateExercise);
 exerciseRouter.delete("/:id", deleteExercise);
 
 export default exerciseRouter;
