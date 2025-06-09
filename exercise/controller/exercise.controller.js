@@ -50,13 +50,24 @@ export const getExerciseById = asyncWrapper(async (req, res) => {
 });
 
 export const updateExercise = asyncWrapper(async (req, res , next) => {
-  console.log("secondary",req.body)
-  const updatedExercise = await exerciseService.updateExercise(req.params.id, req.body);
+  // Process uploaded files
+  const imageUrl = req.files?.image ? req.files.image[0].path : undefined;
+  const videoUrl = req.files?.video ? req.files.video[0].path : undefined;
+
+  // Prepare update data
+  const updateData = {
+    ...req.body,
+    ...(imageUrl && { imageUrl: [imageUrl] }), // Only add if image exists
+    ...(videoUrl && { videoUrl: [videoUrl] })  // Only add if video exists
+  };
+
+  const updatedExercise = await exerciseService.updateExercise(req.params.id, updateData);
+  
   res.status(200).json({
     success: true,
     message: "Exercise updated successfully",
     data: updatedExercise
-})
+  });
 });
 
 export const deleteExercise = asyncWrapper(async (req, res) => {

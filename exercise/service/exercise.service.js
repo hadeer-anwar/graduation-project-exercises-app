@@ -61,11 +61,11 @@ export const updateExercise = async (id, updateData) => {
     );
   }
 
-  // Update the exercise
-  const updatedExercise = await Exercise.findByIdAndUpdate(id, updateData, {
-    new: true,
-    runValidators: true,
-  });
+   const updatedExercise = await Exercise.findByIdAndUpdate(
+    id, 
+    updateData, 
+    { new: true, runValidators: true }
+  );
 
   if (!updatedExercise) {
     throw new appError("Exercise update failed");
