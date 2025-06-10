@@ -100,7 +100,7 @@ export const updateUserPassword = async (userId, newPassword) => {
   }
 
   // Hash new password
-  user.password = await bcrypt.hash(newPassword, 10);
+  user.password = newPassword
   user.passwordChangedAt = Date.now();
   await user.save();
 
