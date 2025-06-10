@@ -22,7 +22,7 @@ import { authToken } from "../middlewares/authToken.js";
 
 
 
-import { userValidator, passwordValidator, userUpdateValidator } from "../middlewares/userValidator.js";
+import { userValidator, passwordValidator } from "../middlewares/userValidator.js";
 
 import {authorizeRole} from '../middlewares/authorizeRole.js';
 import { checkResetCodeController, forgotPassword, resetPasswordController } from "../user/controller/forgotPassword.controller.js";
@@ -42,7 +42,7 @@ userRouter.get("/followers", authToken, getUserFollowers);
 userRouter.get("/following", authToken, getUserFollowing);
 userRouter.get("/",  getUsers)
 userRouter.get("/:id", getOneUser)
-userRouter.put("/:id", authToken, userUpdateValidator, updateUser);
+userRouter.put("/update-info", authToken, updateUser);
 userRouter.delete("/:id", authToken, deleteOneUser )
 userRouter.put("/changeRole/:id", authToken, authorizeRole("admin"), changeUserRole)
 userRouter.post("/follow/:id", authToken, follow)

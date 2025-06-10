@@ -92,7 +92,7 @@ export const updateUser = asyncWrapper(async (req, res, next) => {
     points: req.body.points,
   }
   
-  user = await userUpdate(id, user, { new: true });
+  user = await userUpdate(req.user._id, user, { new: true });
   res.status(200).json({
     data: user,
     success: true,

@@ -1,4 +1,4 @@
-import { validateUpdateUser, validateUser, validateUserPassword } from "../validators/user.validation.js";
+import {  validateUser, validateUserPassword } from "../validators/user.validation.js";
 
 export const userValidator =  (req, res, next) => {
     const { error } =   validateUser.validate(req.body, { abortEarly: false, context: { user: req.user } });
@@ -25,13 +25,4 @@ export const passwordValidator = (req, res, next) => {
 };
 
 
-  
-  // Middleware for dynamic user update validation
-  export const userUpdateValidator =  (req, res, next) => {
-    const { error } =  validateUpdateUser.validate(req.body, { abortEarly: false });
-    if (error) {
-      return res.status(400).json({ errors: error.details.map((err) => err.message) });
-    }
-    next();
-  };
   

@@ -48,17 +48,3 @@ export const validateUserPassword = Joi.object({
 
 
 
-// Dynamic user update validation
-export const validateUpdateUser = Joi.object({
-  name: Joi.string().min(2).optional().messages({
-    'string.min': 'User name must be at least 2 characters long'
-  }),
-  email: Joi.string().email().optional().external(async (val) => {
-    const existingUser = await User.findOne({ email: val });
-    if (existingUser) {
-      throw new appError('Email already in use');
-    }
-  }).messages({
-    'string.email': 'Invalid email address'
-  })
-});
