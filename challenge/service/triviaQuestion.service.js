@@ -38,7 +38,7 @@ export const getTriviaQuestions = async (filter = {}) => {
 
 export const getTriviaQuestionById = async (id) => {
   const question = await TriviaQuestion.findById(id);
-  if (!question) throw appError("Trivia question not found", 404);
+  if (!question) throw new appError("Trivia question not found", 404);
   return question;
 };
 
