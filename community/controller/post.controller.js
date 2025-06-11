@@ -80,7 +80,7 @@ export const getPostDetails = asyncWrapper(async (req, res) => {
 
 // Get authenticated user's own created posts
 export const getUserPosts = asyncWrapper(async (req, res) => {
-    const posts = await postService.getUserCreatedPosts(req.user._id);
+    const posts = await postService.getUserCreatedPosts(req.params.id);
     res.status(200).json({
         success: true,
         message: "user posts",

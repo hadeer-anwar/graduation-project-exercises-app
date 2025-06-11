@@ -58,7 +58,7 @@ communityRouter.delete('/comments/deleteComment/:commentId', authToken, deleteCo
 
 communityRouter.get('/following/posts', authToken, getFollowingPosts)
 
-communityRouter.get('/user-posts', authToken, getUserPosts);
+communityRouter.get('/user-posts/:id', getUserPosts);
 communityRouter.get('/user-shares', authToken, getUserSharedPosts);
 communityRouter.get('/user-all-posts', authToken, getAllUserPosts);
 export default communityRouter;

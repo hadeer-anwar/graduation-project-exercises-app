@@ -20,6 +20,7 @@ import challengeRouter from './routes/challenge.route.js';
 import sessionRouter from './routes/session.route.js';
 import userExerciseProgressRouter from './routes/userExerciseProgress.route.js';
 import userChallengeProgressRouter from './routes/userChallengeProgress.route.js';
+import statsRouter from './routes/stats.route.js';
 
 const app = express();
 
@@ -65,6 +66,7 @@ app.use('/api/v1/challenge', challengeRouter)
 app.use('/api/v1/challengeSession', sessionRouter)
 app.use('/api/v1/progress', userExerciseProgressRouter)
 app.use('/api/v1/challenge-progress', userChallengeProgressRouter)
+app.use('/api/v1/stats', statsRouter)
 // Error handling
 app.use(errorHandler);
 

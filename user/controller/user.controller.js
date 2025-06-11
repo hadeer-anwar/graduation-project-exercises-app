@@ -260,7 +260,7 @@ export const changeProfilePic = async (req, res, next) => {
 
 
 export const getUserFollowers = asyncWrapper(async (req, res) => {
-  const followers = await getFollowers(req.user._id);
+  const followers = await getFollowers(req.params.id);
   res.status(200).json({
     success: true,
     count: followers.length,
@@ -269,7 +269,7 @@ export const getUserFollowers = asyncWrapper(async (req, res) => {
 });
 
 export const getUserFollowing = asyncWrapper(async (req, res) => {
-  const following = await getFollowing(req.user._id);
+  const following = await getFollowing(req.params.id);
   res.status(200).json({
     success: true,
     count: following.length,

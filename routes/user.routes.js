@@ -38,8 +38,8 @@ userRouter.post("/forgot-password", forgotPassword)
 userRouter.post("/check-otp", checkResetCodeController)
 userRouter.post("/reset-password", resetPasswordController)
 userRouter.get("/my-profile", authToken, getMyProfile)
-userRouter.get("/followers", authToken, getUserFollowers);
-userRouter.get("/following", authToken, getUserFollowing);
+userRouter.get("/followers/:id", getUserFollowers);
+userRouter.get("/following/:id", getUserFollowing);
 userRouter.get("/",  getUsers)
 userRouter.get("/:id", getOneUser)
 userRouter.put("/update-info", authToken, updateUser);
