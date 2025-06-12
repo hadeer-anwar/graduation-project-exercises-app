@@ -1,5 +1,5 @@
 import express from "express";
-import { createExercise, getAllExercises, getExerciseById, updateExercise, deleteExercise } from "../exercise/controller/exercise.controller.js";
+import { createExercise, getAllExercises, getExerciseById, updateExercise, deleteExercise, getLatestExercises } from "../exercise/controller/exercise.controller.js";
 import { exerciseValidator } from "../middlewares/exerciseValidator.js";
 
 import { uploadFiles } from "../cloudinary/cloudinaryConfig.js";
@@ -15,7 +15,7 @@ exerciseRouter.post(
   exerciseValidator,
   createExercise
 );
-
+exerciseRouter.get("/latest", getLatestExercises)
 exerciseRouter.get("/", getAllExercises);
 exerciseRouter.get("/:id",getExerciseById);
 exerciseRouter.put("/:id", uploadFiles.fields([

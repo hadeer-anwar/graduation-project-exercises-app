@@ -44,10 +44,7 @@ userRouter.get("/following/:id", getUserFollowing);
 userRouter.get('/top-users', getTopTenUsers);
 
 userRouter.put("/update-info", authToken, updateUser);
-userRouter.get("/",  getUsers)
-userRouter.get("/:id", getOneUser)
-userRouter.patch("/:id", updateUser )
-userRouter.delete("/:id", authToken, deleteOneUser )
+
 userRouter.put("/changeRole/:id", authToken, authorizeRole("admin"), changeUserRole)
 userRouter.post("/follow/:id", authToken, follow)
 userRouter.post("/unfollow/:id", authToken, unfollow)
@@ -58,8 +55,13 @@ userRouter.patch(
   uploadFiles.single("image"), 
   changeProfilePic
 );
-userRouter.get("/followers", authToken, getUserFollowers);
-userRouter.get("/following", authToken, getUserFollowing);
+userRouter.get("/followers/:id",  getUserFollowers);
+userRouter.get("/following/:id",  getUserFollowing);
+
+userRouter.get("/",  getUsers)
+userRouter.get("/:id", getOneUser)
+userRouter.patch("/:id", updateUser )
+userRouter.delete("/:id", authToken, deleteOneUser )
 
 export default userRouter;
 

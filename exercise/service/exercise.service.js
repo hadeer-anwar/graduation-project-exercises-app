@@ -91,3 +91,13 @@ export const deleteExercise = async (id) => {
   return exercise;
 };
 
+export const getLatestExercisesService = async () => {
+  const exercises = await Exercise.find().sort({ createdAt: -1 }).limit(5);
+
+  if (!exercises || exercises.length === 0) {
+    throw new appError('No exercises found', 404);
+  }
+
+  return exercises;
+};
+

@@ -79,3 +79,13 @@ export const deleteExercise = asyncWrapper(async (req, res) => {
 })
 
 });
+
+
+export const getLatestExercises = asyncWrapper(async (req, res) => {
+  const exercises = await exerciseService.getLatestExercisesService();
+  res.status(200).json({
+    status: 'success',
+    results: exercises.length,
+    data: exercises,
+  });
+});
