@@ -1,7 +1,7 @@
 // controllers/userChallengeProgressController.js
 import * as progressService from '../service/userChallengeProgress.service.js';
 import asyncWrapper from '../../middlewares/asyncWrapper.js'
-
+import appError from '../../utils/appError.js';
 import { io } from '../../index.js'
 
 export const updateProgress = asyncWrapper(async (req, res) => {
@@ -28,4 +28,18 @@ export const getLeaderboard = asyncWrapper(async (req, res) => {
 
     res.status(200).json({ success: true, data: leaderboard });
 
+});
+
+
+export const getLastLeaderboard = asyncWrapper(async (req, res, next) => {
+  const leaderboard = await progressService.getLastSessionLeaderboard();
+
+  if (!leaderboard.length) {
+    return next(new appError('No leaderboard found for the latest session', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: leaderboard,
+  });
 });

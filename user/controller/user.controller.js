@@ -17,7 +17,8 @@ import {
   createAdminUser,
   changeProfilePicture,
   getFollowers,
-  getFollowing
+  getFollowing,
+  getTopUsers
 } from '../service/user.service.js'
 
 const tokenOption = {
@@ -79,7 +80,7 @@ export const adminSignin = asyncWrapper(async (req, res, next) => {
 });
 
 export const updateUser = asyncWrapper(async (req, res, next) => {
-  const { id } = req.params;
+  const id =  req.user?._id || req.params.id ;
   let user = {
     name: req.body.name,
     email: req.body.email,
@@ -90,9 +91,10 @@ export const updateUser = asyncWrapper(async (req, res, next) => {
     fitnessGoal: req.body.fitnessGoal,
     activityLevel: req.body.activityLevel,
     points: req.body.points,
+    gender: req.body.gender
   }
   
-  user = await userUpdate(req.user._id, user, { new: true });
+  user = await userUpdate(id, user, { new: true });
   res.status(200).json({
     data: user,
     success: true,
@@ -274,5 +276,19 @@ export const getUserFollowing = asyncWrapper(async (req, res) => {
     success: true,
     count: following.length,
     data: following,
+  });
+});
+
+
+export const getTopTenUsers = asyncWrapper(async (req, res, next) => {
+  const users = await getTopUsers();
+
+  if (!users || users.length === 0) {
+    return next(new appError('No users found', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: users,
   });
 });

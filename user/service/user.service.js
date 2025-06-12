@@ -252,3 +252,10 @@ export const getFollowing = async (userId) => {
   return user.following;
 };
 
+export const getTopUsers = async () => {
+  return await User.find()
+    .sort({ points: -1 })
+    .limit(10)
+    .select('name email profilePic points');
+};
+

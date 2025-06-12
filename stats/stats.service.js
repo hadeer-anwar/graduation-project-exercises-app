@@ -17,8 +17,8 @@ export const getStats = async () => {
     admins: adminCount,
     exercises: exerciseCount,
     completedSessions,
-    males,
-    females
+    males:males,
+    females: females,
   };
 };
 

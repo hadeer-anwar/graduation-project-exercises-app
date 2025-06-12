@@ -2,6 +2,8 @@
 import UserChallengeProgress from '../model/userChallengeProgress.model.js';
 import Session from '../model/Session.model.js'
 import appError from '../../utils/appError.js'
+import User from '../../user/model/user.model.js';
+
 
 export const updateChallengeProgress = async ({ userId, sessionId, challengeId, score, completed }) => {
   // 1. Validate user is part of session (participant or host)
@@ -44,6 +46,13 @@ export const updateChallengeProgress = async ({ userId, sessionId, challengeId, 
   // 4. Recalculate total score
   userProgress.totalScore = userProgress.challenges.reduce((sum, ch) => sum + (ch.score || 0), 0);
 
+  // 5. update points
+   const user = await User.findById(userId);
+  if (!user) throw new appError('User not found', 404);
+
+  
+  user.points = (user.points || 0) + score;
+
   await userProgress.save();
   return userProgress;
 };
@@ -51,8 +60,16 @@ export const updateChallengeProgress = async ({ userId, sessionId, challengeId, 
 
 export const getLeaderboardForSession = async (sessionId) => {
   const leaderboard = await UserChallengeProgress.find({ sessionId })
-    .populate('userId', 'name') // Adjust fields as needed
+    .populate('userId', 'name profilePic') // Adjust fields as needed
     .sort({ totalScore: -1 });
 
+  return leaderboard;
+};
+
+
+export const getLastSessionLeaderboard = async () => {
+  const lastSession = await Session.findOne().sort({ createdAt: -1 }); // or use sessionNumber if applicable
+
+  const leaderboard = await getLeaderboardForSession(lastSession.sessionId)
   return leaderboard;
 };

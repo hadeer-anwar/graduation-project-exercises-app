@@ -1,7 +1,5 @@
 
 import Joi from 'joi';
-import User from '../user/model/user.model.js';
-import appError from '../utils/appError.js';
 
 // User creation validation
 

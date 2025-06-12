@@ -15,6 +15,7 @@ import { changePassword,
          changeProfilePic,
          getUserFollowers,
          getUserFollowing,
+         getTopTenUsers,
          }
          from "../user/controller/user.controller.js";
 
@@ -40,9 +41,12 @@ userRouter.post("/reset-password", resetPasswordController)
 userRouter.get("/my-profile", authToken, getMyProfile)
 userRouter.get("/followers/:id", getUserFollowers);
 userRouter.get("/following/:id", getUserFollowing);
+userRouter.get('/top-users', getTopTenUsers);
+
+userRouter.put("/update-info", authToken, updateUser);
 userRouter.get("/",  getUsers)
 userRouter.get("/:id", getOneUser)
-userRouter.put("/update-info", authToken, updateUser);
+userRouter.patch("/:id", updateUser )
 userRouter.delete("/:id", authToken, deleteOneUser )
 userRouter.put("/changeRole/:id", authToken, authorizeRole("admin"), changeUserRole)
 userRouter.post("/follow/:id", authToken, follow)
