@@ -50,16 +50,35 @@ export const getUserAgeStats = async () => {
 export const getCommunityStats = async () => {
   const totalPosts = await Post.countDocuments();
 
+  // Aggregate totals: likes, comments, shares
+  const totals = await Post.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalLikes: { $sum: { $size: "$likes" } },
+        totalComments: { $sum: { $size: "$comments" } },
+        totalShares: { $sum: { $size: "$sharedBy" } }
+      }
+    }
+  ]);
+
+  const totalLikes = totals[0]?.totalLikes || 0;
+  const totalComments = totals[0]?.totalComments || 0;
+  const totalShares = totals[0]?.totalShares || 0;
+
+  // Most liked post
   const mostLikedPost = await Post.findOne()
-    .sort({ "likes.length": -1 }) // or .sort({ likes: -1 }) if likes is a number
+    .sort({ "likes.length": -1 }) // If likes is an array
     .populate("user", "name profilePic")
     .lean();
 
+  // Most shared post
   const mostSharedPost = await Post.findOne()
-    .sort({ "sharedBy.length": -1 }) // or .sort({ shares: -1 }) if shares is a number
+    .sort({ "sharedBy.length": -1 }) // If sharedBy is an array
     .populate("user", "name profilePic")
     .lean();
 
+  // Most active user
   const mostActiveUserAgg = await Post.aggregate([
     {
       $group: {
@@ -90,8 +109,12 @@ export const getCommunityStats = async () => {
 
   return {
     totalPosts,
+    totalLikes,
+    totalComments,
+    totalShares,
     mostLikedPost,
     mostSharedPost,
     mostActiveUser: mostActiveUserAgg[0] || null
   };
 };
+
