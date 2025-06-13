@@ -2,6 +2,7 @@ import User from '../user/model/user.model.js'
 import Exercise from './../exercise/model/exercise.model.js';
 import Session from '../challenge/model/Session.model.js'
 import Post from '../community/model/post.model.js'
+import UserExerciseProgress from '../user/model/userExerciseProgress.model.js'
 
 export const getStats = async () => {
   const [userCount, adminCount, exerciseCount, completedSessions, males, females ] = await Promise.all([
@@ -118,3 +119,74 @@ export const getCommunityStats = async () => {
   };
 };
 
+export const getGlobalExerciseTimeStatsService = async () => {
+  const result = await UserExerciseProgress.aggregate([
+    {
+      $project: {
+        hour: { $hour: "$createdAt" } // extract hour (0–23)
+      }
+    },
+    {
+      $group: {
+        _id: "$hour",
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $sort: { _id: 1 }
+    },
+    {
+      $project: {
+        hour: "$_id",
+        count: 1,
+        _id: 0
+      }
+    }
+  ]);
+
+  return result;
+};
+
+
+
+export const getUserGrowthByMonth = async () => {
+  const [growthByMonth, nullDateCount] = await Promise.all([
+    // Group users with valid createdAt
+    User.aggregate([
+      {
+        $match: {
+          createdAt: { $ne: null }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m", date: "$createdAt" }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } },
+      {
+        $project: {
+          month: "$_id",
+          count: 1,
+          _id: 0
+        }
+      }
+    ]),
+
+    // Count users with null or missing createdAt
+    User.countDocuments({ createdAt: null })
+  ]);
+
+  // Optional: Add the null count as "Unknown"
+  if (nullDateCount > 0) {
+    growthByMonth.unshift({
+      month: "Unknown",
+      count: nullDateCount
+    });
+  }
+
+  return growthByMonth;
+};

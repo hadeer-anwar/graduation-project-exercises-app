@@ -68,8 +68,18 @@ export const getLeaderboardForSession = async (sessionId) => {
 
 
 export const getLastSessionLeaderboard = async () => {
-  const lastSession = await Session.findOne().sort({ createdAt: -1 }); // or use sessionNumber if applicable
+  // Find all sessions ordered by newest
+  const sessions = await Session.find().sort({ createdAt: -1 });
 
-  const leaderboard = await getLeaderboardForSession(lastSession.sessionId)
-  return leaderboard;
+  for (const session of sessions) {
+    const leaderboard = await getLeaderboardForSession(session.sessionId);
+    
+    // If the session has a valid leaderboard (not empty), return it
+    if (leaderboard && leaderboard.length > 0) {
+      return leaderboard;
+    }
+  }
+
+  // If no session has a leaderboard
+  return [];
 };

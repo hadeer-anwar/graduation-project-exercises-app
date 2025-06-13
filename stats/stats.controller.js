@@ -1,4 +1,9 @@
-import { getStats as getStatsService, getUserAgeStats, getCommunityStats as communityStats } from './stats.service.js';
+import { getStats as getStatsService,
+        getUserAgeStats,
+        getCommunityStats as communityStats,
+        getGlobalExerciseTimeStatsService,
+        getUserGrowthByMonth,
+  } from './stats.service.js';
 import asyncWrapper from '../middlewares/asyncWrapper.js';
 
 export const getStats = asyncWrapper(async (req, res) => {
@@ -19,3 +24,17 @@ export const getCommunityStats = asyncWrapper (async (req, res) => {
     res.status(200).json(stats);
 
 });
+
+export const getGlobalExerciseTimeStats = asyncWrapper (async (req, res) =>{
+   const data = await getGlobalExerciseTimeStatsService();
+    res.status(200).json({
+      success: true,
+      data
+    });
+})
+
+
+export const userMonthlyGrowthController = asyncWrapper ( async (req, res) => {
+    const growth = await getUserGrowthByMonth();
+    res.json({ success: true, data: growth });
+})
