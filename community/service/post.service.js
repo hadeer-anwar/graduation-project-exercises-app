@@ -26,7 +26,7 @@ export const createPost = async (userId, postData) => {
     });
 
   await User.findByIdAndUpdate(userId, {
-  $push: { posts: post._id }
+  $push: { posts: newPost._id }
 });
 return newPost;
 };
