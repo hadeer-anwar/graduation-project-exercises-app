@@ -3,6 +3,7 @@ import * as progressService from '../service/userChallengeProgress.service.js';
 import asyncWrapper from '../../middlewares/asyncWrapper.js'
 import appError from '../../utils/appError.js';
 import { io } from '../../index.js'
+import mongoose from 'mongoose';
 
 export const updateProgress = asyncWrapper(async (req, res) => {
   const { userId, sessionId, challengeId, score, completed } = req.body;
@@ -43,3 +44,17 @@ export const getLastLeaderboard = asyncWrapper(async (req, res, next) => {
     data: leaderboard,
   });
 });
+
+
+
+export const getUserChallengeProgressController = asyncWrapper (async (req, res) => {
+   const userId = req.params.id;
+    const progress = await progressService.getUserChallengeProgress(userId);
+    
+    
+      return res.status(200).json({
+      success: true,
+      message: "User challenge progress retrieved successfully",
+      progress,
+    });
+})

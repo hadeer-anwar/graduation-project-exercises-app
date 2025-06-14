@@ -3,7 +3,7 @@ import UserChallengeProgress from '../model/userChallengeProgress.model.js';
 import Session from '../model/Session.model.js'
 import appError from '../../utils/appError.js'
 import User from '../../user/model/user.model.js';
-
+import mongoose from 'mongoose';
 
 export const updateChallengeProgress = async ({ userId, sessionId, challengeId, score, completed }) => {
   // 1. Validate user is part of session (participant or host)
@@ -82,4 +82,23 @@ export const getLastSessionLeaderboard = async () => {
 
   // If no session has a leaderboard
   return [];
+};
+
+export const getUserChallengeProgress = async (userId) => {
+  
+  console.log("Is valid:", mongoose.Types.ObjectId.isValid(userId));
+
+  const progress = await UserChallengeProgress.find({ userId })
+    .populate({
+      path: "sessionId",
+      model: "Session",
+      localField: "sessionId",
+      foreignField: "sessionId", // assuming Session has a field called sessionId
+      justOne: true
+    })
+    .populate("challenges.challengeId");
+
+    if(!progress) throw new appError("no progress for this user")
+
+  return progress;
 };
