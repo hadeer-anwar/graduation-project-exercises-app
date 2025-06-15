@@ -78,14 +78,20 @@ export const startSession = async (sessionId, userId) => {
 
 };
 
-export const endSession = async (sessionId,userId ) => {
-    const session = await Session.findOne({sessionId});
+export const endSession = async (sessionId, userId) => {
+  const session = await Session.findOne({ sessionId });
   if (!session) {
     throw new appError("Session not found", 404);
   }
- if (session.host.toString() !== userId.toString()) {
-  throw new appError("Only the host can start the session", 403);
-}
+
+  const isHost = session.host?.toString() === userId.toString();
+  const isParticipant = session.participants?.some(
+    p => p.toString() === userId.toString()
+  );
+
+  if (!isHost && !isParticipant) {
+    throw new appError("User is not authorized to end this session", 403);
+  }
 
   if (session.status === 'completed') {
     throw new appError("Session is already ended", 400);
@@ -95,7 +101,8 @@ export const endSession = async (sessionId,userId ) => {
   await session.save();
 
   return session;
-}
+};
+
 
 // User joins a session
 export const joinSession = async (sessionId, userId) => {
