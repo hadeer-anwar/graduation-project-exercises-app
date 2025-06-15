@@ -59,7 +59,7 @@ export const updateChallengeProgress = async ({ userId, sessionId, challengeId, 
 
 
 export const getLeaderboardForSession = async (sessionId) => {
-  const leaderboard = await UserChallengeProgress.find({ sessionId })
+  const leaderboard = await UserChallengeProgress.find({ sessionId})
     .populate('userId', 'name profilePic') // Adjust fields as needed
     .sort({ totalScore: -1 });
 
@@ -69,7 +69,7 @@ export const getLeaderboardForSession = async (sessionId) => {
 
 export const getLastSessionLeaderboard = async () => {
   // Find all sessions ordered by newest
-  const sessions = await Session.find().sort({ createdAt: -1 });
+  const sessions = await Session.find({status: "completed"}).sort({ updatedAt: -1 });
 
   for (const session of sessions) {
     const leaderboard = await getLeaderboardForSession(session.sessionId);
